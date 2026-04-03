@@ -15,7 +15,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// 4. Routes
+// 4. Routes 
 app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
 
