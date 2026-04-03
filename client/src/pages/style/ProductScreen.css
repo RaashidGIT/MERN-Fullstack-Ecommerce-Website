@@ -36,7 +36,19 @@
 .product-page-info {
   flex: 1;
   min-width: 300px;
+  max-width: 600px; /* 🔥 added to prevent overflow */
   text-align: left;
+}
+
+/* 🔥 FIXED TITLE */
+.product-page-info h1 {
+  font-size: 2rem;
+  line-height: 1.2;
+  margin: 0.5rem 0 1rem;
+  color: #2f3542;
+
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .page-category {

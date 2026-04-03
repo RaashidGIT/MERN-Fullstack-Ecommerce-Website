@@ -2,6 +2,7 @@ import { useCart } from '../context/CartContext';
 import { Link } from 'react-router-dom';
 import './style/CartScreen.css';
 import { useNavigate } from 'react-router-dom';
+import '../App.css'; 
 
 const CartScreen = () => {
     const { cartItems, removeFromCart, increaseQty, decreaseQty, clearCart } = useCart();

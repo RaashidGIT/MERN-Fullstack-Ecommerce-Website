@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import productRoutes from './routes/productRoutes.js';
+import userRoutes from './routes/userRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
 
 // 1. Load Environment Variables FIRST
@@ -18,6 +19,7 @@ app.use(express.json());
 // 4. Routes 
 app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
+app.use('/api/users', userRoutes);
 
 app.get("/api/test", (req, res) => {
   res.json({ message: "Backend is working!" });

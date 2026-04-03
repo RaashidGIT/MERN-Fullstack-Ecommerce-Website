@@ -100,3 +100,26 @@
   right: -10px;
   /* This creates the "floating" badge effect often seen on real apps */
 }
+
+.main-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+}
+
+.header-links {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.logout-btn {
+  background: none;
+  border: 1px solid #ff4757;
+  color: #ff4757;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-left: 10px;
+}
