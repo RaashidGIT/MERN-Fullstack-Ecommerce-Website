@@ -1,0 +1,8 @@
+mern-project/
+├── client/                # React Vite app
+├── models/                # Mongoose schemas (Database)
+├── routes/                # API endpoints
+├── controllers/           # Logic for each route
+├── .env                   # Environment variables (DB URI, Ports)
+├── .gitignore             # Ignore node_modules
+└── server.js              # Backend entry point

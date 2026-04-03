@@ -1,0 +1,49 @@
+/* HomeScreen.css */
+
+.home-container {
+  padding: 10px 20px;
+}
+
+.search-section {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.search-bar {
+  width: 100%;
+  max-width: 500px;
+  padding: 12px 20px;
+  font-size: 1rem;
+  border: 2px solid #ddd;
+  border-radius: 25px;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.search-bar:focus {
+  border-color: #ff4757;
+  box-shadow: 0 0 8px rgba(255, 71, 87, 0.2);
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+}
+
+.error-msg {
+  color: #ff4757;
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  font-weight: bold;
+}

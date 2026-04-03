@@ -1,0 +1,102 @@
+.add-to-cart:hover {
+  background: #ff4757;   /* Nice little hover effect for your store */
+}
+
+.product-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px;
+  margin-top: 20px;
+  background: white;
+  padding: 30px;
+  border-radius: 15px;
+}
+
+.details-image img {
+  max-width: 400px;
+  width: 100%;
+  border-radius: 10px;
+}
+
+.details-info {
+  flex: 1;
+  min-width: 300px;
+  text-align: left;
+}
+
+.price-large {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #2f3542;
+  margin: 20px 0;
+}
+
+.in-stock { color: green; font-weight: bold; }
+.out-of-stock { color: red; font-weight: bold; }
+
+.add-to-cart-large {
+  background: #ff4757;
+  color: white;
+  border: none;
+  padding: 15px 30px;
+  font-size: 1.2rem;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.add-to-cart-large:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.search-section {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.main-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center; /* This is what aligns the text and icon vertically */
+  padding: 1rem 2rem;
+  background-color: #1a1a1a; /* Dark theme for a professional anime shop look */
+  color: white;
+  border-bottom: 2px solid #ff4757;
+}
+
+.logo {
+  cursor: pointer;
+  margin: 0;
+  font-size: 1.8rem;
+  transition: color 0.3s;
+}
+
+.logo:hover {
+  color: #ff4757;
+}
+
+.cart-container {
+  display: flex;
+  align-items: center;
+  position: relative;
+  cursor: pointer;
+}
+
+.cart-emoji {
+  font-size: 1.8rem;
+}
+
+.cart-badge {
+  background-color: #ff4757;
+  color: white;
+  font-size: 0.75rem;
+  font-weight: bold;
+  border-radius: 50%;
+  padding: 2px 7px;
+  position: absolute;
+  top: -5px;
+  right: -10px;
+  /* This creates the "floating" badge effect often seen on real apps */
+}
