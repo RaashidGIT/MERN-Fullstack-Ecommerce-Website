@@ -3,13 +3,13 @@ import { createContext, useState, useContext, useEffect } from 'react';
 const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
-  // Check localStorage so they stay logged in after a refresh
-  const [userInfo, setUserInfo] = useState(
-    localStorage.getItem('userInfo') 
-      ? JSON.parse(localStorage.getItem('userInfo')) 
-      : null
-  );
+  // Load saved user session on initial render
+  const [userInfo, setUserInfo] = useState(() => {
+    const savedUser = localStorage.getItem('userInfo');
+    return savedUser ? JSON.parse(savedUser) : null;
+  });
 
+  // Save or clear user session in localStorage
   const login = (data) => {
     setUserInfo(data);
     localStorage.setItem('userInfo', JSON.stringify(data));
@@ -27,4 +27,11 @@ export const UserProvider = ({ children }) => {
   );
 };
 
-export const useUser = () => useContext(UserContext);
+// Hook for accessing user auth state
+export const useUser = () => {
+  const context = useContext(UserContext);
+  if (!context) {
+    throw new Error('useUser must be used within a UserProvider');
+  }
+  return context;
+};

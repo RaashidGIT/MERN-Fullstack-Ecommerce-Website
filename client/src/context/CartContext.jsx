@@ -3,88 +3,95 @@ import { createContext, useState, useContext, useEffect } from 'react';
 const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
-    const [cartItems, setCartItems] = useState([]);
-    const [notification, setNotification] = useState(null);
+  // Load saved cart from localStorage on initial render
+  const [cartItems, setCartItems] = useState(() => {
+    const savedCart = localStorage.getItem('cartItems');
+    return savedCart ? JSON.parse(savedCart) : [];
+  });
 
-    // Accept qty with a fallback default of 1
-    const addToCart = (product, qty = 1) => {
-        const quantityToAdd = Number(qty) || 1;
+  const [notification, setNotification] = useState(null);
 
-        setCartItems((prevItems) => {
-            const existItem = prevItems.find((x) => x._id === product._id);
-            
-            if (existItem) {
-                return prevItems.map((x) =>
-                    x._id === product._id 
-                        ? { ...existItem, qty: existItem.qty + quantityToAdd } 
-                        : x
-                );
-            }
-            
-            return [...prevItems, { ...product, qty: quantityToAdd }];
-        });
+  // Save cart to localStorage whenever it updates
+  useEffect(() => {
+    localStorage.setItem('cartItems', JSON.stringify(cartItems));
+  }, [cartItems]);
 
-        // Trigger notification with quantity count
-        const countText = quantityToAdd > 1 ? ` (${quantityToAdd})` : '';
-        setNotification(`${product.name}${countText} added to cart! 🚀`);
+  // Add item or increment qty if it already exists
+  const addToCart = (product, qty = 1) => {
+    const quantityToAdd = Number(qty) || 1;
 
-        setTimeout(() => {
-            setNotification(null);
-        }, 3000);
-    };
-
-    // Remove from Cart
-    const removeFromCart = (id) => {
-        setCartItems(cartItems.filter((x) => x._id !== id));
-    };
-
-    // 1. Increase Qty
-    const increaseQty = (id) => {
-        setCartItems(prev =>
-            prev.map(item =>
-                item._id === id ? { ...item, qty: item.qty + 1 } : item
-            )
+    setCartItems((prevItems) => {
+      const existItem = prevItems.find((x) => x._id === product._id);
+      
+      if (existItem) {
+        return prevItems.map((x) =>
+          x._id === product._id 
+            ? { ...existItem, qty: existItem.qty + quantityToAdd } 
+            : x
         );
-    };
+      }
+      return [...prevItems, { ...product, qty: quantityToAdd }];
+    });
 
-    // 2. Decrease Qty
-    const decreaseQty = (id) => {
-        setCartItems(prev =>
-            prev.map(item =>
-                item._id === id && item.qty > 1 
-                    ? { ...item, qty: item.qty - 1 } 
-                    : item
-            )
-        );
-    };
+    // Show temporary notification
+    const countText = quantityToAdd > 1 ? ` (${quantityToAdd})` : '';
+    setNotification(`${product.name}${countText} added to cart! 🚀`);
 
-    // 3. Clear Cart
-    const clearCart = () => {
-        setCartItems([]);
-    };
+    setTimeout(() => {
+      setNotification(null);
+    }, 3000);
+  };
 
-    return (
-        <CartContext.Provider value={{ 
-            cartItems,
-            addToCart, 
-            removeFromCart, 
-            notification,
-            increaseQty, 
-            decreaseQty, 
-            clearCart 
-        }}>
-            {children}
-        </CartContext.Provider>
+  // Remove item by ID
+  const removeFromCart = (id) => {
+    setCartItems(cartItems.filter((x) => x._id !== id));
+  };
+
+  // Increment item quantity
+  const increaseQty = (id) => {
+    setCartItems((prev) =>
+      prev.map((item) =>
+        item._id === id ? { ...item, qty: item.qty + 1 } : item
+      )
     );
+  };
+
+  // Decrement item quantity (minimum 1)
+  const decreaseQty = (id) => {
+    setCartItems((prev) =>
+      prev.map((item) =>
+        item._id === id && item.qty > 1 
+          ? { ...item, qty: item.qty - 1 } 
+          : item
+      )
+    );
+  };
+
+  // Empty the entire cart
+  const clearCart = () => {
+    setCartItems([]);
+  };
+
+  return (
+    <CartContext.Provider value={{ 
+      cartItems,
+      addToCart, 
+      removeFromCart, 
+      notification,
+      increaseQty, 
+      decreaseQty, 
+      clearCart 
+    }}>
+      {children}
+    </CartContext.Provider>
+  );
 };
 
-// Custom hook for easy use
+// Hook for accessing cart state
 export const useCart = () => {
-    const context = useContext(CartContext);
-    
-    if (context === undefined) {
-        throw new Error('useCart must be used within a CartProvider');
-    }
-    
-    return context;
+  const context = useContext(CartContext);
+  if (!context) {
+    throw new Error('useCart must be used within a CartProvider');
+  }
+  return context;
 };
