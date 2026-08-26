@@ -2,48 +2,97 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 70vh;
+  min-height: 75vh;
+  padding: 1rem;
 }
 
 .login-form {
-  background: white;
-  padding: 2.5rem;
-  border-radius: 15px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  background: #ffffff;
+  padding: 2.75rem 2.25rem;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
   width: 100%;
   max-width: 400px;
   text-align: center;
-}
-
-/* 🔥 Global fix for alignment */
-.login-form input,
-.login-btn {
-  width: 100%;
-  padding: 12px;
-  border-radius: 8px;
-  box-sizing: border-box; /* IMPORTANT */
+  box-sizing: border-box;
 }
 
 .login-form h1 {
-  margin-bottom: 2rem;
-  color: #2f3542;
+  margin: 0 0 1.75rem 0;
+  color: #1e2229;
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
 }
 
+/* Input Fields */
 .login-form input {
-  margin-bottom: 1rem;
-  border: 1px solid #ffaaef;
+  width: 100%;
+  padding: 14px 16px;
+  margin-bottom: 1.2rem;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 10px;
+  background-color: #f8fafc;
+  color: #1e293b;
+  font-size: 0.95rem;
+  outline: none;
+  box-sizing: border-box;
+  transition: all 0.2s ease-in-out;
 }
 
-/* Button */
+.login-form input::placeholder {
+  color: #94a3b8;
+}
+
+.login-form input:focus {
+  background-color: #ffffff;
+  border-color: #ff4757;
+  box-shadow: 0 0 0 3px rgba(255, 71, 87, 0.15);
+}
+
+/* Submit Button */
 .login-btn {
+  width: 100%;
+  padding: 14px;
+  border-radius: 10px;
   background: #ff4757;
-  color: white;
+  color: #ffffff;
   border: none;
-  font-weight: bold;
+  font-size: 1rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: 0.3s;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 4px 12px rgba(255, 71, 87, 0.3);
+  margin-top: 0.5rem;
 }
 
 .login-btn:hover {
-  background: #ff6b81;
+  background: #ff2e43;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(255, 71, 87, 0.4);
+}
+
+.login-btn:active {
+  transform: translateY(0);
+}
+
+/* Bottom Text & Link */
+.login-form p {
+  margin-top: 1.5rem;
+  margin-bottom: 0;
+  font-size: 0.9rem;
+  color: #64748b;
+}
+
+.login-form p a {
+  color: #ff4757;
+  text-decoration: none;
+  font-weight: 600;
+  margin-left: 4px;
+  transition: color 0.2s ease;
+}
+
+.login-form p a:hover {
+  color: #ff2e43;
+  text-decoration: underline;
 }

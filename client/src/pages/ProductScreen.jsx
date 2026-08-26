@@ -12,6 +12,7 @@ const ProductScreen = () => {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [qty, setQty] = useState(1); // 1. Track chosen quantity
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -31,6 +32,18 @@ const ProductScreen = () => {
     };
     fetchProduct();
   }, [id]);
+
+  const handleDecrease = () => {
+    if (qty > 1) setQty(qty - 1);
+  };
+
+  const handleIncrease = () => {
+    if (qty < product.countInStock) setQty(qty + 1);
+  };
+
+  const handleAddToCart = () => {
+    addToCart(product, qty);
+  };
 
   if (loading) return <LoadingSpinner message="Inspecting anime gear..." />;
   if (error) return <div className="error-msg">{error} <Link to="/">Go Back</Link></div>;
@@ -58,12 +71,36 @@ const ProductScreen = () => {
             )}
           </div>
 
+          {/* 2. Quantity Counter Section */}
+          {product.countInStock > 0 && (
+            <div className="qty-picker-container">
+              <span className="qty-label">Quantity:</span>
+              <div className="qty-controls">
+                <button 
+                  type="button" 
+                  onClick={handleDecrease} 
+                  disabled={qty <= 1}
+                >
+                  -
+                </button>
+                <span className="qty-num">{qty}</span>
+                <button 
+                  type="button" 
+                  onClick={handleIncrease} 
+                  disabled={qty >= product.countInStock}
+                >
+                  +
+                </button>
+              </div>
+            </div>
+          )}
+
           <button 
             className="add-to-cart-btn" 
             disabled={product.countInStock === 0}
-            onClick={() => addToCart(product)}
+            onClick={handleAddToCart}
           >
-            {product.countInStock > 0 ? 'Add to Cart' : 'Out of Stock'}
+            {product.countInStock > 0 ? `Add ${qty} to Cart` : 'Out of Stock'}
           </button>
         </div>
       </div>

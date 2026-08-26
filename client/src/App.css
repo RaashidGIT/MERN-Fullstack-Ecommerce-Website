@@ -1,3 +1,25 @@
+/* index.css / App.css */
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+#root {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.shop-container {
+  width: 100%;
+  max-width: 100%; /* Remove any fixed max-width like 1200px or 80% */
+  margin: 0;
+  padding: 0;
+}
+
 .add-to-cart:hover {
   background: #ff4757;   /* Nice little hover effect for your store */
 }

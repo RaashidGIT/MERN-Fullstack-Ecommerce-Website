@@ -2,13 +2,16 @@
   display: flex;
   flex-wrap: wrap;
   gap: 2rem;
-  padding: 2rem;
+  padding: 1.5rem 2rem;
   align-items: flex-start;
+  width: 100%;
+  box-sizing: border-box;
 }
 
+/* 1. Increases the items column proportion from flex: 2 to flex: 3 */
 .cart-items {
-  flex: 2;
-  min-width: 300px;
+  flex: 3;
+  min-width: 320px;
 }
 
 .cart-item {
@@ -16,28 +19,34 @@
   align-items: center;
   gap: 1.5rem;
   background: white;
-  padding: 1rem;
+  padding: 1rem 1.25rem;
   margin-bottom: 1rem;
-  border-radius: 10px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
 
+/* 2. Uses contain & prevents flex shrink so images keep their full shape */
 .cart-item img {
-  width: 80px;
-  height: 80px;
-  object-fit: cover;
-  border-radius: 5px;
+  width: 90px;
+  height: 90px;
+  object-fit: contain; /* Shows full image without cropping */
+  object-position: center;
+  flex-shrink: 0;       /* Stops the image from getting squished */
+  padding: 4px;
+  background-color: #fafafa;
+  border-radius: 8px;
+  box-sizing: border-box;
 }
 
 .item-details {
   flex-grow: 1;
+  text-align: left;
 }
 
-.qty-controls button {
-  padding: 5px 10px;
-  cursor: pointer;
-  background: #eee;
-  border: 1px solid #ddd;
+.item-details h3, 
+.item-details h4 {
+  margin: 0 0 0.5rem 0;
+  color: #2f3542;
 }
 
 .remove-btn {
@@ -45,16 +54,20 @@
   border: none;
   color: #ff4757;
   cursor: pointer;
-  font-weight: bold;
+  font-size: 1.1rem;
+  padding: 4px;
+  margin-left: 8px;
 }
 
+/* 3. Sets a clean, proportional summary card width */
 .cart-summary {
   flex: 1;
-  background: #f9f9f9;
+  background: #ffffff;
   padding: 1.5rem;
-  border-radius: 10px;
-  border: 1px solid #ddd;
-  min-width: 250px;
+  border-radius: 12px;
+  border: 1px solid #eee;
+  min-width: 260px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
 
 .checkout-btn {
@@ -63,9 +76,15 @@
   color: white;
   padding: 12px;
   border: none;
-  border-radius: 5px;
+  border-radius: 6px;
   margin-top: 1rem;
   cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+
+.checkout-btn:hover {
+  background: #1e2229;
 }
 
 .cart-header {
@@ -78,20 +97,24 @@
 .qty-controls {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   background: #eee;
-  padding: 5px 10px;
+  padding: 4px 10px;
   border-radius: 20px;
 }
 
 .qty-controls button {
   background: #7f7f7f;
-  border: 1px solid #ddd;
+  color: white;
+  border: none;
   border-radius: 50%;
-  width: 25px;
-  height: 25px;
+  width: 24px;
+  height: 24px;
   cursor: pointer;
   font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .qty-num {

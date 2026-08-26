@@ -10,55 +10,57 @@ function HomeScreen() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    console.log("Fetching products..."); // Debug 1
     fetch("http://localhost:5000/api/products")
       .then((res) => res.json())
       .then((data) => {
-        console.log("Data received:", data); // Debug 2
-        setProducts(data);
+        setProducts(Array.isArray(data) ? data : []);
         setLoading(false);
       })
       .catch((err) => {
-        console.error("Fetch error:", err); // Debug 3
+        console.error("Fetch error:", err);
         setLoading(false);
       });
   }, []);
 
-  // Logic to filter products based on name or category
-  const filteredProducts = Array.isArray(products) 
-  ? products.filter((item) => {
-      return (
-        item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.category.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    })
-  : []; // If products isn't an array, just return an empty list
+  // Show all products if searchTerm is empty; otherwise filter
+  const filteredProducts = searchTerm.trim() === ""
+    ? products
+    : products.filter((item) => {
+        const term = searchTerm.toLowerCase();
+        const nameMatch = item.name?.toLowerCase().includes(term);
+        const categoryMatch = item.category?.toLowerCase().includes(term);
+        return nameMatch || categoryMatch;
+      });
 
   return (
     <div className="home-container">
       <div className="search-section">
         <input
           type="text"
+          value={searchTerm}
           placeholder="Search by name or category (e.g. Manga)..."
           className="search-bar"
-          onChange={(e) => setSearchTerm(e.target.value)} // 3. Update state on type
+          onChange={(e) => setSearchTerm(e.target.value)}
         />
       </div>
 
-        {loading ? (
-        <LoadingSpinner message="Loading loot..." /> // <--- Pass the text here
-        ) : (
+      {loading ? (
+        <LoadingSpinner message="Loading loot..." />
+      ) : (
         <div className="product-grid">
-            {filteredProducts.length > 0 ? (
+        {filteredProducts.length > 0 ? (
             filteredProducts.map((item) => (
-                <ProductCard key={item._id} product={item} />
+              <ProductCard key={item._id} product={item} />
             ))
-            ) : (
-            <p>No matches found for "{searchTerm}"</p>
-            )}
+          ) : searchTerm.trim() !== "" ? (
+            <p className="no-products-msg">No matches found for "{searchTerm}"</p>
+          ) : (
+            <p className="no-products-msg">No products available in the store right now.</p>
+          )}
         </div>
-        )}
+      )}
     </div>
   );
 }
+
 export default HomeScreen;

@@ -28,7 +28,7 @@
 }
 
 .product-page-image img {
-  width: 100%;
+  width: 80%;
   border-radius: 10px;
   object-fit: contain;
 }
@@ -36,11 +36,10 @@
 .product-page-info {
   flex: 1;
   min-width: 300px;
-  max-width: 600px; /* 🔥 added to prevent overflow */
+  max-width: 600px; /* added to prevent overflow */
   text-align: left;
 }
 
-/* 🔥 FIXED TITLE */
 .product-page-info h1 {
   font-size: 2rem;
   line-height: 1.2;
@@ -114,4 +113,54 @@
   font-size: 1.5rem;
   margin-bottom: 20px;
   font-weight: bold;
+}
+
+.qty-picker-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.qty-label {
+  font-weight: 600;
+  color: #333;
+}
+
+.qty-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #f1f2f6;
+  padding: 6px 14px;
+  border-radius: 20px;
+}
+
+.qty-controls button {
+  background: #2f3542;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s;
+}
+
+.qty-controls button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.qty-num {
+  font-size: 1.1rem;
+  font-weight: bold;
+  min-width: 24px;
+  text-align: center;
+  color: #2f3542;
 }

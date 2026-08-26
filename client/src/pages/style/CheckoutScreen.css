@@ -5,11 +5,19 @@
   padding: 3rem;
   max-width: 1100px;
   margin: 0 auto;
+  align-items: flex-start;
 }
 
 .checkout-form-section {
   flex: 2;
   min-width: 300px;
+  text-align: left; /* Aligns headings and form labels */
+}
+
+.checkout-form-section h2,
+.checkout-form-section h3 {
+  text-align: left;
+  margin-bottom: 1rem;
 }
 
 .checkout-form-section form {
@@ -23,13 +31,28 @@
   border: 1px solid #ddd;
   border-radius: 5px;
   font-size: 1rem;
+  box-sizing: border-box;
 }
 
 .payment-method {
   margin-top: 1.5rem;
-  padding: 1rem;
+  padding: 1.25rem;
   background: #f8f9fa;
   border-radius: 8px;
+  text-align: left; /* Keeps radio options left-aligned */
+}
+
+.payment-method h3 {
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+  text-align: left;
+}
+
+.payment-method label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
 }
 
 .place-order-btn {
@@ -39,9 +62,13 @@
   border: none;
   border-radius: 8px;
   font-size: 1.1rem;
+  font-weight: bold;
   cursor: pointer;
   margin-top: 1rem;
+  width: 100%;
 }
+
+/* --- Order Summary Sidebar Fixes --- */
 
 .order-summary-sidebar {
   flex: 1;
@@ -50,11 +77,46 @@
   border-radius: 10px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   height: fit-content;
+  text-align: left; /* Prevents center-align inheritance */
+}
+
+.order-summary-sidebar h2,
+.order-summary-sidebar h3 {
+  text-align: center;
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  color: #2f3542;
 }
 
 .summary-item {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 10px;
-  font-size: 0.9rem;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 12px;
+  font-size: 0.95rem;
+  color: #333;
+}
+
+/* Product title stays on the left and wraps cleanly */
+.summary-item span:first-child {
+  text-align: left;
+  flex: 1;
+}
+
+/* Price stays pinned to the right edge and never wraps */
+.summary-item span:last-child {
+  text-align: right;
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+.summary-total {
+  display: flex;
+  justify-content: center; /* Centers horizontally */
+  align-items: center;
+  margin-top: 1rem;
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #2f3542;
 }
