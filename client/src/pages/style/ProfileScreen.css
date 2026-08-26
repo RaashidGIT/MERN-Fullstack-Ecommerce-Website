@@ -1,7 +1,7 @@
 .profile-page-container {
   display: flex;
   gap: 2.5rem;
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 2rem auto;
   padding: 0 1.5rem;
   align-items: flex-start;
@@ -206,4 +206,88 @@
     width: 100%;
     box-sizing: border-box;
   }
+}
+
+/* Ensure text inside white product cards is always dark */
+.product-card .product-info {
+  color: #2f3542;
+}
+
+.product-card .product-info h3 {
+  color: #2f3542 !important;
+}
+
+.product-card .product-info .category {
+  color: #747d8c !important;
+}
+
+.product-card .product-info .price {
+  color: #1e222d !important;
+  font-weight: bold;
+}
+
+/* --- ONLY affects cards inside the Profile / Wishlist screen --- */
+
+/* 1. Scale images to fit without stretching ONLY on profile page */
+.profile-content-area .product-card .product-image {
+  width: 100%;
+  height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ffffff;
+  overflow: hidden;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.profile-content-area .product-card .product-image img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  display: block;
+}
+
+/* 2. Smaller font sizes ONLY on profile page */
+.profile-content-area .product-card .product-info h3 {
+  color: #2f3542 !important;
+  font-size: 0.85rem;
+  line-height: 1.25;
+  margin: 4px 0 6px 0;
+  min-height: 2.4em;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.profile-content-area .product-card .product-info .category {
+  color: #747d8c !important;
+  font-size: 0.72rem;
+}
+
+.profile-content-area .product-card .product-info .price {
+  color: #1e222d !important;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+/* Hide any variation of the wishlist button inside the profile page */
+
+.profile-content-area .product-actions button:nth-child(2) {
+  display: none !important;
+}
+
+/* Make the remaining Add to Cart button stretch 100% full width */
+.profile-content-area .card-btn-group{
+  display: block !important;
+  grid-template-columns: 1fr !important;
+  width: 100% !important;
+}
+
+.profile-content-area .add-to-cart {
+  width: 100% !important;
 }
