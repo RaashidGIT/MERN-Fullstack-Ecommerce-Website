@@ -145,3 +145,29 @@ html, body {
   cursor: pointer;
   margin-left: 10px;
 }
+.user-menu {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.profile-nav-link,
+.login-nav-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+  color: #f1f2f6;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.profile-nav-link:hover,
+.login-nav-link:hover {
+  color: #ff4757;
+}
+
+.user-icon {
+  display: inline-block;
+  vertical-align: middle;
+}
