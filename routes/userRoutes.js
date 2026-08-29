@@ -1,6 +1,8 @@
 import express from 'express';
 import User from '../models/User.js';
 import generateToken from '../utils/generateToken.js'; 
+import { getUserWishlist, toggleWishlistItem } from '../controllers/userController.js';
+import { protect } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
@@ -51,5 +53,9 @@ router.post('/login', async (req, res) => {
     res.status(401).json({ message: 'Invalid email or password' });
   }
 });
+
+// Wishlist endpoints
+router.get('/wishlist', protect, getUserWishlist);
+router.put('/wishlist/:productId', protect, toggleWishlistItem);
 
 export default router;

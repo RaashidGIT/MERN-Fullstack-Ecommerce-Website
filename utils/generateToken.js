@@ -1,8 +1,9 @@
 import jwt from 'jsonwebtoken';
 
 const generateToken = (id) => {
-  return jwt.sign({ id }, "YOUR_SECRET_KEY", {
-    expiresIn: '30d', // The user stays logged in for 30 days
+  const secret = process.env.JWT_SECRET;
+  return jwt.sign({ id }, secret, {
+    expiresIn: '30d',
   });
 };
 
