@@ -291,3 +291,54 @@
 .profile-content-area .add-to-cart {
   width: 100% !important;
 }
+
+/* Wishlist Sort Controls */
+.section-header-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  width: 100%;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.wishlist-sort-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sort-label {
+  color: #a4b0be;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.profile-sort-select {
+  background: #2f3542;
+  color: #f1f2f6;
+  border: 1px solid #57606f;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.profile-sort-select:hover:not(:disabled),
+.profile-sort-select:focus {
+  border-color: #ff4757;
+  background: #3a404d;
+}
+
+.profile-sort-select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.profile-sort-select option {
+  background: #1e222d;
+  color: #f1f2f6;
+}

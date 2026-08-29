@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
 import { useWishlist } from '../context/WishlistContext';
@@ -16,6 +16,8 @@ const ProfileScreen = () => {
   const [activeTab, setActiveTab] = useState('wishlist'); // 'profile' | 'wishlist' | 'listings'
   const [myListings, setMyListings] = useState([]);
   const [loadingListings, setLoadingListings] = useState(false);
+  // Sorting state for Wishlist
+  const [sortBy, setSortBy] = useState('default');
 
   // Redirect to login if user is unauthenticated
   useEffect(() => {
@@ -23,6 +25,26 @@ const ProfileScreen = () => {
       navigate('/login');
     }
   }, [userInfo, navigate]);
+
+  // Sort wishlist items based on selected option
+  const sortedWishlist = useMemo(() => {
+    if (!Array.isArray(wishlistItems)) return [];
+
+    const items = [...wishlistItems];
+
+    switch (sortBy) {
+      case 'price-asc':
+        return items.sort((a, b) => (a.price || 0) - (b.price || 0));
+      case 'price-desc':
+        return items.sort((a, b) => (b.price || 0) - (a.price || 0));
+      case 'name-asc':
+        return items.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+      case 'name-desc':
+        return items.sort((a, b) => (b.name || '').localeCompare(a.name || ''));
+      default:
+        return items; // Default order (as saved in DB)
+    }
+  }, [wishlistItems, sortBy]);
 
   // Fetch products uploaded by this user
   useEffect(() => {
@@ -60,7 +82,7 @@ const ProfileScreen = () => {
             className={`profile-nav-btn ${activeTab === 'wishlist' ? 'active' : ''}`}
             onClick={() => setActiveTab('wishlist')}
           >
-            ❤️ Wishlist ({wishlistItems.length})
+            ❤️ Wishlist ({wishlistItems?.length})
           </button>
           <button
             type="button"
@@ -83,33 +105,47 @@ const ProfileScreen = () => {
         </button>
       </aside>
 
-      {/* Main Tab Content */}
+      {/* Content Area */}
       <main className="profile-content-area">
-        {/* Wishlist Tab */}
         {activeTab === 'wishlist' && (
-          <section className="profile-section">
-            <h3>Saved Items ({wishlistItems.length})</h3>
-            {wishlistItems.length === 0 ? (
-              <p className="empty-tab-text">
-                Your wishlist is empty. <Link to="/">Browse items to save!</Link>
-              </p>
+          <div className="profile-section">
+            <div className="section-header-flex">
+              <h3>Saved Items ({wishlistItems?.length || 0})</h3>
+
+              {/* Sorting Dropdown */}
+              <div className="wishlist-sort-wrapper">
+                <label htmlFor="wishlist-sort" className="sort-label">
+                  Sort by:
+                </label>
+                <select
+                  id="wishlist-sort"
+                  className="profile-sort-select"
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value)}
+                  disabled={!wishlistItems || wishlistItems.length === 0}
+                >
+                  <option value="default">Default</option>
+                  <option value="price-asc">Price: Low to High</option>
+                  <option value="price-desc">Price: High to Low</option>
+                  <option value="name-asc">Name: A to Z</option>
+                  <option value="name-desc">Name: Z to A</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Wishlist Grid */}
+            {sortedWishlist.length === 0 ? (
+              <div className="empty-tab-box">
+                <p>Your wishlist is currently empty.</p>
+              </div>
             ) : (
               <div className="profile-products-grid">
-                {wishlistItems.map((item) => (
-                  <div key={item._id} className="wishlist-item-card">
-                    <ProductCard product={item} />
-                    <button
-                      type="button"
-                      className="wishlist-remove-btn"
-                      onClick={() => toggleWishlist(item)}
-                    >
-                      Remove from Wishlist
-                    </button>
-                  </div>
+                {sortedWishlist.map((item) => (
+                  <ProductCard key={item._id} product={item} showWishlist={false} />
                 ))}
               </div>
             )}
-          </section>
+          </div>
         )}
 
         {/* My Listed Products Tab */}
