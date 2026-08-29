@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
 import { useWishlist } from '../context/WishlistContext';
 import ProductCard from '../components/productCard';
@@ -11,25 +11,27 @@ const ProfileScreen = () => {
   const { wishlistItems } = useWishlist();
   const navigate = useNavigate();
 
-  const [activeTab, setActiveTab] = useState('wishlist'); // 'profile' | 'wishlist' | 'listings'
+  const [activeTab, setActiveTab] = useState('profile'); // 'profile' | 'wishlist' | 'listings'
   const [myListings, setMyListings] = useState([]);
   const [loadingListings, setLoadingListings] = useState(false);
-  // Sorting state for Wishlist
   const [sortBy, setSortBy] = useState('default');
 
-  // Redirect to login if user is unauthenticated
+  // Delete modal & loading states
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  // Redirect to login if unauthenticated
   useEffect(() => {
     if (!userInfo) {
       navigate('/login');
     }
   }, [userInfo, navigate]);
 
-  // Sort wishlist items based on selected option
+  // Sort wishlist items
   const sortedWishlist = useMemo(() => {
     if (!Array.isArray(wishlistItems)) return [];
 
     const items = [...wishlistItems];
-
     switch (sortBy) {
       case 'price-asc':
         return items.sort((a, b) => (a.price || 0) - (b.price || 0));
@@ -40,7 +42,7 @@ const ProfileScreen = () => {
       case 'name-desc':
         return items.sort((a, b) => (b.name || '').localeCompare(a.name || ''));
       default:
-        return items; // Default order (as saved in DB)
+        return items;
     }
   }, [wishlistItems, sortBy]);
 
@@ -51,7 +53,6 @@ const ProfileScreen = () => {
       fetch(`http://localhost:5000/api/products?seller=${userInfo._id}`)
         .then((res) => res.json())
         .then((data) => {
-          // Fallback filter if backend doesn't filter query params yet
           const userProducts = Array.isArray(data)
             ? data.filter((item) => item.user === userInfo._id || item.seller === userInfo._id)
             : [];
@@ -61,6 +62,33 @@ const ProfileScreen = () => {
         .catch(() => setLoadingListings(false));
     }
   }, [userInfo, activeTab]);
+
+  // Handle Account Deletion
+  const handleDeleteAccount = async () => {
+    setIsDeleting(true);
+    try {
+      const res = await fetch('http://localhost:5000/api/users/profile', {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      });
+
+      if (res.ok) {
+        logout();
+        navigate('/');
+      } else {
+        const errorData = await res.json();
+        alert(errorData.message || 'Failed to delete account');
+      }
+    } catch (error) {
+      console.error('Delete account error:', error);
+      alert('Could not connect to server.');
+    } finally {
+      setIsDeleting(false);
+      setShowDeleteModal(false);
+    }
+  };
 
   if (!userInfo) return null;
 
@@ -80,7 +108,7 @@ const ProfileScreen = () => {
             className={`profile-nav-btn ${activeTab === 'wishlist' ? 'active' : ''}`}
             onClick={() => setActiveTab('wishlist')}
           >
-            ❤️ Wishlist ({wishlistItems?.length})
+            ❤️ Wishlist ({wishlistItems?.length || 0})
           </button>
           <button
             type="button"
@@ -105,12 +133,12 @@ const ProfileScreen = () => {
 
       {/* Content Area */}
       <main className="profile-content-area">
+        {/* Wishlist Tab */}
         {activeTab === 'wishlist' && (
           <div className="profile-section">
             <div className="section-header-flex">
               <h3>Saved Items ({wishlistItems?.length || 0})</h3>
 
-              {/* Sorting Dropdown */}
               <div className="wishlist-sort-wrapper">
                 <label htmlFor="wishlist-sort" className="sort-label">
                   Sort by:
@@ -131,7 +159,6 @@ const ProfileScreen = () => {
               </div>
             </div>
 
-            {/* Wishlist Grid */}
             {sortedWishlist.length === 0 ? (
               <div className="empty-tab-box">
                 <p>Your wishlist is currently empty.</p>
@@ -146,7 +173,7 @@ const ProfileScreen = () => {
           </div>
         )}
 
-        {/* My Listed Products Tab */}
+        {/* Listings Tab */}
         {activeTab === 'listings' && (
           <section className="profile-section">
             <div className="section-header-flex">
@@ -183,10 +210,20 @@ const ProfileScreen = () => {
           </section>
         )}
 
-        {/* Account Details Tab */}
+        {/* Account Settings Tab */}
         {activeTab === 'profile' && (
           <section className="profile-section">
-            <h3>Account Settings</h3>
+            <div className="section-header-flex">
+              <h3 className="settings-header-title">Account Details</h3>
+              <button
+                type="button"
+                className="delete-account-top-btn"
+                onClick={() => setShowDeleteModal(true)}
+              >
+                🗑️ Delete Account
+              </button>
+            </div>
+
             <div className="account-details-box">
               <div className="detail-row">
                 <span className="detail-label">Full Name:</span>
@@ -203,10 +240,38 @@ const ProfileScreen = () => {
             </div>
           </section>
         )}
-
-        {/* Add a delete Account button later */}
-
       </main>
+
+      {/* Confirmation Modal */}
+      {showDeleteModal && (
+        <div className="modal-overlay" onClick={() => setShowDeleteModal(false)}>
+          <div className="modal-card-box" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-icon-alert">⚠️</div>
+            <h3>Delete Account?</h3>
+            <p>
+              Are you sure you want to permanently delete your account? All your saved items, listings, and profile data will be permanently removed.
+            </p>
+            <div className="modal-action-buttons">
+              <button
+                type="button"
+                className="modal-btn-cancel"
+                onClick={() => setShowDeleteModal(false)}
+                disabled={isDeleting}
+              >
+                No, Keep It
+              </button>
+              <button
+                type="button"
+                className="modal-btn-confirm"
+                onClick={handleDeleteAccount}
+                disabled={isDeleting}
+              >
+                {isDeleting ? 'Deleting...' : 'Yes, Delete'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

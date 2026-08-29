@@ -342,3 +342,128 @@
   background: #1e222d;
   color: #f1f2f6;
 }
+
+/* Header and Delete Account Trigger */
+.settings-header-title {
+  font-size: 1.4rem;
+  color: #ffffff;
+  font-weight: 700;
+  margin: 0;
+}
+
+.delete-account-top-btn {
+  background: rgba(255, 71, 87, 0.12);
+  color: #ff4757;
+  border: 1px solid rgba(255, 71, 87, 0.4);
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.delete-account-top-btn:hover {
+  background: #ff4757;
+  color: #ffffff;
+  border-color: #ff4757;
+}
+
+/* Modal Overlay (Dark theme matched) */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 12, 16, 0.82);
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease;
+}
+
+.modal-card-box {
+  background: #1e222d;
+  border: 1px solid #2f3542;
+  border-radius: 14px;
+  width: 90%;
+  max-width: 440px;
+  padding: 32px 28px;
+  text-align: center;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.5);
+  animation: scaleUp 0.2s ease;
+}
+
+.modal-icon-alert {
+  font-size: 2.5rem;
+  margin-bottom: 12px;
+}
+
+.modal-card-box h3 {
+  color: #f1f2f6;
+  font-size: 1.4rem;
+  margin-bottom: 10px;
+}
+
+.modal-card-box p {
+  color: #a4b0be;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin-bottom: 24px;
+}
+
+.modal-action-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.modal-btn-cancel {
+  flex: 1;
+  background: #2f3542;
+  color: #f1f2f6;
+  border: none;
+  padding: 12px 18px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.modal-btn-cancel:hover:not(:disabled) {
+  background: #3e4451;
+}
+
+.modal-btn-confirm {
+  flex: 1;
+  background: #ff4757;
+  color: #ffffff;
+  border: none;
+  padding: 12px 18px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.modal-btn-confirm:hover:not(:disabled) {
+  background: #e84118;
+}
+
+.modal-btn-cancel:disabled,
+.modal-btn-confirm:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleUp {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
