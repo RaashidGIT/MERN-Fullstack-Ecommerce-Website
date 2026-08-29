@@ -2,15 +2,13 @@ import { useState, useEffect, useMemo } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
 import { useWishlist } from '../context/WishlistContext';
-import { useCart } from '../context/CartContext';
 import ProductCard from '../components/productCard';
 import './style/ProfileScreen.css';
 import '../App.css';
 
 const ProfileScreen = () => {
   const { userInfo, logout } = useUser();
-  const { wishlistItems, toggleWishlist } = useWishlist();
-  const { addToCart } = useCart();
+  const { wishlistItems } = useWishlist();
   const navigate = useNavigate();
 
   const [activeTab, setActiveTab] = useState('wishlist'); // 'profile' | 'wishlist' | 'listings'
