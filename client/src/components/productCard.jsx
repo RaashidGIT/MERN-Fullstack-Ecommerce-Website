@@ -1,11 +1,14 @@
-// Here contains the logic for the product card component, which displays individual product details and provides options to add to cart or wishlist.
-
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useWishlist } from '../context/useWishlist';
 import './style/ProductCard.css';
 
-const ProductCard = ({ product, showWishlist = true, isSellerView = false }) => {
+const ProductCard = ({ 
+  product, 
+  showWishlist = true, 
+  isSellerView = false, 
+  children 
+}) => {
   const { addToCart } = useCart();
   const { toggleWishlist, isInWishlist } = useWishlist();
 
@@ -33,9 +36,9 @@ const ProductCard = ({ product, showWishlist = true, isSellerView = false }) => 
         </Link>
         <p className="price">${product.price.toFixed(2)}</p>
 
-        {/* Action Controls */}
-        <div className="product-card-actions">
-          {!isSellerView && (
+        {/* Regular Buyer Controls */}
+        {!isSellerView && (
+          <div className="product-card-actions">
             <button
               type="button"
               className={`add-to-cart ${isOutOfStock ? 'disabled-out-of-stock' : ''}`}
@@ -44,33 +47,36 @@ const ProductCard = ({ product, showWishlist = true, isSellerView = false }) => 
             >
               {isOutOfStock ? 'Out of Stock' : 'Add to Cart'}
             </button>
-          )}
 
-          {showWishlist && !isSellerView && (
-            <button
-              type="button"
-              className={`wishlist-btn ${isFavorited ? 'favorited' : ''}`}
-              onClick={(e) => {
-                e.preventDefault();
-                toggleWishlist(product);
-              }}
-              title={isFavorited ? 'Remove from wishlist' : 'Save to wishlist'}
-            >
-              <svg
-                viewBox="0 0 24 24"
-                width="20"
-                height="20"
-                fill={isFavorited ? '#ffffff' : 'none'}
-                stroke={isFavorited ? '#ffffff' : '#a4b0be'}
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
+            {showWishlist && (
+              <button
+                type="button"
+                className={`wishlist-btn ${isFavorited ? 'favorited' : ''}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  toggleWishlist(product);
+                }}
+                title={isFavorited ? 'Remove from wishlist' : 'Save to wishlist'}
               >
-              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-              </svg>
-            </button>
-          )}
-        </div>
+                <svg
+                  viewBox="0 0 24 24"
+                  width="20"
+                  height="20"
+                  fill={isFavorited ? '#ffffff' : 'none'}
+                  stroke={isFavorited ? '#ffffff' : '#a4b0be'}
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                </svg>
+              </button>
+            )}
+          </div>
+        )}
+
+        {/* Seller Restock Controls Injected Into Blank Card Space */}
+        {isSellerView && children}
       </div>
     </div>
   );

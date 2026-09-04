@@ -1,5 +1,3 @@
-// Here contains the logic for the listings tab in the profile page, including fetching user's listed products, sorting them, and handling deletion of listings.
-
 import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ProductCard from '../productCard';
@@ -9,6 +7,8 @@ const ListingsTab = ({ userInfo, onListingsCountChange }) => {
   const [myListings, setMyListings] = useState([]);
   const [loadingListings, setLoadingListings] = useState(false);
   const [sortBy, setSortBy] = useState('default');
+  const [restockInputs, setRestockInputs] = useState({});
+  const [updatingMap, setUpdatingMap] = useState({});
   const navigate = useNavigate();
 
   // 1. Fetch user's listed products
@@ -59,7 +59,49 @@ const ListingsTab = ({ userInfo, onListingsCountChange }) => {
     }
   }, [myListings, sortBy]);
 
-  // 3. Delete listing handler
+  // 3. Counter helpers
+  const getQty = (id) => restockInputs[id] || 1;
+
+  const handleQtyChange = (id, delta) => {
+    const current = getQty(id);
+    const next = Math.max(1, current + delta);
+    setRestockInputs((prev) => ({ ...prev, [id]: next }));
+  };
+
+  // 4. Send restock patch to backend
+  const handleRestock = async (productId) => {
+    const addCount = getQty(productId);
+    setUpdatingMap((prev) => ({ ...prev, [productId]: true }));
+
+    try {
+      const res = await fetch(`http://localhost:5000/api/products/${productId}/restock`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+        body: JSON.stringify({ restockQty: addCount }),
+      });
+
+      const updated = await res.json();
+
+      if (res.ok) {
+        setMyListings((prev) =>
+          prev.map((item) => (item._id === productId ? updated : item))
+        );
+        setRestockInputs((prev) => ({ ...prev, [productId]: 1 }));
+      } else {
+        alert(updated.message || 'Failed to restock product');
+      }
+    } catch (err) {
+      console.error('Restock error:', err);
+      alert('Error updating product stock');
+    } finally {
+      setUpdatingMap((prev) => ({ ...prev, [productId]: false }));
+    }
+  };
+
+  // 5. Delete listing handler
   const handleDeleteListing = async (productId) => {
     if (!window.confirm('Are you sure you want to remove this listing?')) return;
 
@@ -89,7 +131,6 @@ const ListingsTab = ({ userInfo, onListingsCountChange }) => {
       <div className="section-header-flex">
         <h3>Items Listed for Sale ({myListings.length})</h3>
 
-        {/* Header Controls: Sort Dropdown + Add Button */}
         <div className="header-controls-group">
           <div className="wishlist-sort-wrapper">
             <label htmlFor="listings-sort" className="sort-label">
@@ -137,7 +178,43 @@ const ListingsTab = ({ userInfo, onListingsCountChange }) => {
         <div className="profile-products-grid">
           {sortedListings.map((item) => (
             <div key={item._id} className="listing-item-wrapper">
-              <ProductCard product={item} showWishlist={false} isSellerView={true} />
+              <ProductCard product={item} showWishlist={false} isSellerView={true}>
+                {/* Restock UI sitting in the empty card space */}
+                <div className="seller-restock-box">
+                  <span className="current-stock-label">
+                    Stock: <strong>{item.countInStock}</strong>
+                  </span>
+
+                  <div className="restock-stepper-row">
+                    <button
+                      type="button"
+                      className="stepper-btn"
+                      onClick={() => handleQtyChange(item._id, -1)}
+                      disabled={getQty(item._id) <= 1}
+                    >
+                      -
+                    </button>
+                    <span className="stepper-count">{getQty(item._id)}</span>
+                    <button
+                      type="button"
+                      className="stepper-btn"
+                      onClick={() => handleQtyChange(item._id, 1)}
+                    >
+                      +
+                    </button>
+                  </div>
+
+                  <button
+                    type="button"
+                    className="btn-restock"
+                    onClick={() => handleRestock(item._id)}
+                    disabled={updatingMap[item._id]}
+                  >
+                    {updatingMap[item._id] ? 'Restocking...' : 'Restock'}
+                  </button>
+                </div>
+              </ProductCard>
+
               <button
                 type="button"
                 className="delete-listing-btn"

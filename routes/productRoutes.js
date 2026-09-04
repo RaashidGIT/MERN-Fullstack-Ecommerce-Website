@@ -89,4 +89,35 @@ router.delete('/:id', protect, async (req, res) => {
   }
 });
 
+// PATCH /api/products/:id/restock
+router.patch('/:id/restock', protect, async (req, res) => {
+  try {
+    const { restockQty } = req.body;
+    const amount = Number(restockQty);
+
+    if (!amount || amount < 1) {
+      return res.status(400).json({ message: 'Valid restock quantity required' });
+    }
+
+    const product = await Product.findById(req.params.id);
+
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+
+    // Ensure the requester owns the product
+    if (product.user.toString() !== req.user._id.toString() && !req.user.isAdmin) {
+      return res.status(403).json({ message: 'Not authorized to modify this listing' });
+    }
+
+    product.countInStock += amount;
+    const updatedProduct = await product.save();
+
+    res.json(updatedProduct);
+  } catch (error) {
+    console.error('Restock error:', error);
+    res.status(500).json({ message: error.message });
+  }
+});
+
 export default router;
