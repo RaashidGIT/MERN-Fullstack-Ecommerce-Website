@@ -1,3 +1,5 @@
+// Here contains the logic for product routes, including creating, fetching, and deleting products, as well as fetching user-specific listings.
+
 import express from 'express';
 import mongoose from 'mongoose';
 import Product from '../models/Product.js';

@@ -1,3 +1,5 @@
+// Here contains the logic for the wishlist tab in the profile page, including fetching user's wishlist items, sorting them, and handling removal of items from the wishlist.
+
 import { useState, useMemo } from 'react';
 import { useWishlist } from '../../context/useWishlist';
 import ProductCard from '../productCard';

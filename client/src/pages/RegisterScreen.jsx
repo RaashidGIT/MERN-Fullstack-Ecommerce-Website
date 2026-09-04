@@ -1,3 +1,5 @@
+// Here contains the logic for the Register screen, which handles user registration, including form inputs for name, email, password, and confirm password, submission to the backend API, and navigation upon successful registration.
+
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useUser } from '../context/UserContext';

@@ -1,3 +1,5 @@
+// Here contains the logic for the Checkout screen, which handles the checkout process, including collecting shipping details, processing the order, and interacting with the backend API to place the order.
+
 import { useState } from 'react';
 import { useCart } from '../context/CartContext';
 import { useNavigate } from 'react-router-dom';

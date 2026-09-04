@@ -19,7 +19,7 @@ const ProfileSidebar = ({ userInfo, activeTab, setActiveTab, counts, logout }) =
           className={`profile-nav-btn ${activeTab === 'wishlist' ? 'active' : ''}`}
           onClick={() => setActiveTab('wishlist')}
         >
-          ❤️ Wishlist ({counts.wishlist})
+          💖 Wishlist
         </button>
 
         <button

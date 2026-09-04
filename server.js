@@ -1,3 +1,5 @@
+// Here contains the logic for setting up the Express.js server, including middleware configuration, route definitions, database connection, and server startup. It also loads environment variables and serves static files from the uploads directory.
+
 import path from 'path';
 import express from 'express';
 import cors from 'cors';

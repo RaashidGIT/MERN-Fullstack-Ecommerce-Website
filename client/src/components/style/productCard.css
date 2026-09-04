@@ -51,7 +51,7 @@
    PRODUCT BUTTONS
    ========================= */
 
-.product-actions {
+.product-card-actions {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -60,51 +60,57 @@
 }
 
 /* Add to Cart */
-
-.product-actions .add-to-cart {
+.product-card-actions .add-to-cart {
   flex: 1;
-  height: 36px;
-
+  height: 38px;
   background: #2f3542;
   color: white;
   border: none;
-  padding: 10px;
-
-  border-radius: 5px;
+  padding: 0 14px;
+  border-radius: 6px;
   cursor: pointer;
-
-  transition: background 0.3s;
+  font-size: 0.9rem;
+  font-weight: 600;
+  box-sizing: border-box;
+  transition: background 0.2s, transform 0.2s;
 }
 
-.product-actions .add-to-cart:hover {
+.product-card-actions .add-to-cart:hover:not(:disabled) {
   background: #ff4757;
+  transform: translateY(-1px);
 }
 
 /* Wishlist */
-
-.product-actions .wishlist-btn {
+.product-card-actions .wishlist-btn {
   flex-shrink: 0;
-
-  width: 36px;
-  height: 36px;
-
+  width: 38px;
+  height: 38px;
   display: flex;
   align-items: center;
   justify-content: center;
-
   padding: 0;
-
-  background: #7f7f7f;
+  background: #2f3542;
   border: none;
-  border-radius: 5px;
-
+  border-radius: 6px;
   cursor: pointer;
+  box-sizing: border-box;
+  transition: background 0.2s, transform 0.2s;
 }
 
-.product-actions .wishlist-btn:hover {
+.product-card-actions .wishlist-btn:hover {
+  background: #ff4757;
+  transform: translateY(-1px);
+}
+
+.product-card-actions .wishlist-btn.favorited {
   background: #ff4757;
 }
 
-.product-actions .wishlist-btn.favorited {
-  background: #2f3542;
+/* Disabled / Out of Stock */
+.product-card-actions .add-to-cart:disabled {
+  background: #e5e5e5 !important;
+  color: #888 !important;
+  cursor: not-allowed !important;
+  border: 1px solid #d5d5d5 !important;
+  opacity: 1;
 }

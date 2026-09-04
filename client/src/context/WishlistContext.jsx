@@ -1,3 +1,5 @@
+// Here contains the logic for the wishlist context, which manages the state of the user's wishlist, including adding, removing, and updating items, as well as persisting the wishlist state in localStorage.
+
 import { createContext, useState, useEffect, useCallback } from 'react';
 import { useUser } from './UserContext';
 

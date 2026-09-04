@@ -1,3 +1,5 @@
+// Here contains the main App component, which sets up the routing for the application, manages user authentication state, and displays the header with navigation links and cart information.
+
 import { Routes, Route, Link } from 'react-router-dom';
 
 import HomeScreen from './pages/HomeScreen';

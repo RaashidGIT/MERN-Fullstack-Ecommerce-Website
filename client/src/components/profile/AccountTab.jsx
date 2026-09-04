@@ -1,3 +1,5 @@
+// Here contains the logic for the account tab in the profile page, including account deletion confirmation modal
+
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './style/AccountTab.css';

@@ -1,3 +1,5 @@
+// Here contains the logic for user routes, including registration, login, wishlist management, and account deletion.
+
 import express from 'express';
 import User from '../models/User.js';
 import generateToken from '../utils/generateToken.js'; 

@@ -1,3 +1,5 @@
+// Here contains the logic for the Add Product screen, which allows authenticated users to list new products for sale, including handling form inputs, image uploads, and submission to the backend API.
+
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../context/UserContext';

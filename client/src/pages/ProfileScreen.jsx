@@ -1,3 +1,5 @@
+// Here contains the logic for the Profile screen, which displays user information, wishlist items, order history, and listings, allowing users to navigate between different tabs and manage their account settings.
+
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useUser } from '../context/UserContext';

@@ -1,18 +1,20 @@
+// Here contains the logic for the Product screen, which displays detailed information about a specific product, allows users to select quantity, and add the product to their shopping cart.
+
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import LoadingSpinner from '../components/LoadingSpinner';
 import './style/ProductScreen.css';
-import '../App.css';  
+import '../App.css';
 
 const ProductScreen = () => {
   const { id } = useParams();
   const { addToCart } = useCart();
-  
+
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [qty, setQty] = useState(1); // 1. Track chosen quantity
+  const [qty, setQty] = useState(1);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -26,7 +28,7 @@ const ProductScreen = () => {
         }
         setLoading(false);
       } catch (err) {
-        setError("Failed to fetch product");
+        setError('Failed to fetch product');
         setLoading(false);
       }
     };
@@ -41,7 +43,10 @@ const ProductScreen = () => {
     if (qty < product.countInStock) setQty(qty + 1);
   };
 
+  const isOutOfStock = !product || (product.countInStock ?? 0) <= 0;
+
   const handleAddToCart = () => {
+    if (isOutOfStock) return;
     addToCart(product, qty);
   };
 
@@ -51,7 +56,7 @@ const ProductScreen = () => {
   return (
     <div className="product-page">
       <Link to="/" className="back-link">← Back to Collection</Link>
-      
+
       <div className="product-details-container">
         <div className="product-page-image">
           <img src={product.image} alt={product.name} />
@@ -62,9 +67,10 @@ const ProductScreen = () => {
           <h1>{product.name}</h1>
           <p className="page-price">${product.price.toFixed(2)}</p>
           <p className="page-description">{product.description}</p>
-          
+
           <div className="stock-status">
-            Status: {product.countInStock > 0 ? (
+            Status:{' '}
+            {!isOutOfStock ? (
               <span className="in-stock">In Stock ({product.countInStock} available)</span>
             ) : (
               <span className="out-of-stock">Currently Sold Out</span>
@@ -79,22 +85,22 @@ const ProductScreen = () => {
             </div>
           </div>
 
-          {/* 2. Quantity Counter Section */}
-          {product.countInStock > 0 && (
+          {/* Quantity Counter Section */}
+          {!isOutOfStock && (
             <div className="qty-picker-container">
               <span className="qty-label">Quantity:</span>
               <div className="qty-controls">
-                <button 
-                  type="button" 
-                  onClick={handleDecrease} 
+                <button
+                  type="button"
+                  onClick={handleDecrease}
                   disabled={qty <= 1}
                 >
                   -
                 </button>
                 <span className="qty-num">{qty}</span>
-                <button 
-                  type="button" 
-                  onClick={handleIncrease} 
+                <button
+                  type="button"
+                  onClick={handleIncrease}
                   disabled={qty >= product.countInStock}
                 >
                   +
@@ -103,12 +109,13 @@ const ProductScreen = () => {
             </div>
           )}
 
-          <button 
-            className="add-to-cart-btn" 
-            disabled={product.countInStock === 0}
+          <button
+            type="button"
+            className="add-to-cart-btn"
+            disabled={isOutOfStock}
             onClick={handleAddToCart}
           >
-            {product.countInStock > 0 ? `Add ${qty} to Cart` : 'Out of Stock'}
+            {!isOutOfStock ? `Add ${qty} to Cart` : 'Out of Stock'}
           </button>
         </div>
       </div>

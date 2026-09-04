@@ -1,3 +1,5 @@
+// Here contains the logic for the Order model, which represents an order placed by a user, including details about the user, ordered items, shipping address, total price, and status flags for cancellation, payment, and delivery.
+
 import mongoose from 'mongoose';
 
 const orderSchema = mongoose.Schema(

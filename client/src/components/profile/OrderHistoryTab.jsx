@@ -1,3 +1,5 @@
+// Here contains the logic for the order history tab in the profile page, including fetching user's orders, displaying them, and handling order cancellations within a 10-minute window.
+
 import { useState, useEffect } from 'react';
 import './style/OrderHistoryTab.css';
 

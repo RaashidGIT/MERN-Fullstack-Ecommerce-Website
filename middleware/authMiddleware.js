@@ -1,3 +1,5 @@
+// here contains the logic for protecting routes and verifying JWT tokens for authenticated users.
+
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
 

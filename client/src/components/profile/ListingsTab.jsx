@@ -1,3 +1,5 @@
+// Here contains the logic for the listings tab in the profile page, including fetching user's listed products, sorting them, and handling deletion of listings.
+
 import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ProductCard from '../productCard';

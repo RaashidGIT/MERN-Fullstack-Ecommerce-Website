@@ -1,3 +1,5 @@
+// Here contains the logic for the User model, which represents a user in the system, including their name, email, password, admin status, and wishlist of products. It also includes methods for password hashing and comparison.
+
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 

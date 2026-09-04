@@ -1,3 +1,5 @@
+// Here contains the logic for seeding the database with sample product data for testing and development purposes. It connects to the MongoDB database, clears existing products, and inserts a predefined list of sample products.
+
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import Product from './models/Product.js';

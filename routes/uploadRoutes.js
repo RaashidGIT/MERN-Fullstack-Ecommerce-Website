@@ -1,3 +1,5 @@
+// Here contains the logic for handling file uploads, specifically for image files, using multer middleware in an Express.js application. It defines the storage configuration, file type validation, and the route for uploading images.
+
 import express from 'express';
 import multer from 'multer';
 import path from 'path';

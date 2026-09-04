@@ -1,3 +1,5 @@
+// Here contains the logic for the toast notification component, which displays notifications to the user based on actions taken in the application.
+
 import { useCart } from '../context/CartContext';
 import './style/Toast.css';
 

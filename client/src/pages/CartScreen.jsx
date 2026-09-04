@@ -1,3 +1,5 @@
+// Here contains the logic for the Cart screen, which displays the items in the user's shopping cart, allows them to adjust quantities, remove items, clear the cart, and proceed to checkout.
+
 import { useCart } from '../context/CartContext';
 import { Link, useNavigate } from 'react-router-dom';
 import './style/CartScreen.css';

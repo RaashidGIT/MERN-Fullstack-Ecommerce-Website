@@ -1,3 +1,5 @@
+// Here contains the logic for the Home screen, which displays a list of products fetched from the backend API, allows users to search, filter by category, and sort the products based on different criteria.
+
 import { useState, useEffect } from 'react';
 import ProductCard from '../components/productCard';
 import LoadingSpinner from '../components/LoadingSpinner';

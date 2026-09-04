@@ -1,3 +1,5 @@
+// Here contains the logic for the user context, which manages the state of the user's authentication and session, including login, logout, and persisting user information in localStorage.
+
 import { createContext, useState, useContext, useEffect } from 'react';
 
 const UserContext = createContext();

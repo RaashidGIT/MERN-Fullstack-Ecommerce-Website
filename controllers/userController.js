@@ -1,3 +1,5 @@
+// Here contains the logic for user wishlist management, including fetching the wishlist and toggling items in it.
+
 import User from '../models/User.js';
 import Product from '../models/Product.js';
 

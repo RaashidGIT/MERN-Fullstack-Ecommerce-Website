@@ -1,3 +1,5 @@
+// Here contains the logic for the Login screen, which handles user authentication, including form inputs for email and password, submission to the backend API, and navigation upon successful login.
+
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useUser } from '../context/UserContext';

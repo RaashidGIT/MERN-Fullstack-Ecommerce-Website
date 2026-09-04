@@ -1,3 +1,5 @@
+// Here contains the logic for the cart context, which manages the state of the shopping cart, including adding, removing, and updating items, as well as persisting the cart state in localStorage.
+
 import { createContext, useState, useContext, useEffect } from 'react';
 
 const CartContext = createContext();

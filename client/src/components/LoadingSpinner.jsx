@@ -1,3 +1,5 @@
+// Here contains the logic for the loading spinner component, which is used to indicate loading states in the application.
+
 import './style/LoadingSpinner.css';
 
 const LoadingSpinner = ({ message = "Loading..." }) => {
