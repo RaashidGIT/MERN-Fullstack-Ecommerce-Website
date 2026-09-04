@@ -6,9 +6,8 @@ import LoadingSpinner from '../components/LoadingSpinner';
 import './style/HomeScreen.css';
 import '../App.css';
 
-function HomeScreen() {
+function HomeScreen({ searchTerm = '' }) {
   const [products, setProducts] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [sortBy, setSortBy] = useState('default');
   const [loading, setLoading] = useState(true);
@@ -31,10 +30,10 @@ function HomeScreen() {
 
   // 1. Filter by search term and selected category
   const filteredProducts = products.filter((item) => {
-    const term = searchTerm.toLowerCase();
+    const term = (searchTerm || '').toLowerCase();
     const nameMatch = item.name?.toLowerCase().includes(term);
     const categoryMatch = item.category?.toLowerCase().includes(term);
-    const matchesSearch = searchTerm.trim() === '' || nameMatch || categoryMatch;
+    const matchesSearch = term.trim() === '' || nameMatch || categoryMatch;
 
     const matchesCategory =
       selectedCategory === 'All' ||
@@ -49,22 +48,11 @@ function HomeScreen() {
     if (sortBy === 'price-high') return b.price - a.price;
     if (sortBy === 'name-az') return a.name.localeCompare(b.name);
     if (sortBy === 'name-za') return b.name.localeCompare(a.name);
-    return 0; // default order
+    return 0;
   });
 
   return (
     <div className="home-container">
-      {/* Search Bar */}
-      <div className="search-section">
-        <input
-          type="text"
-          value={searchTerm}
-          placeholder="Search by name or category (e.g. Manga)..."
-          className="search-bar"
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-      </div>
-
       {/* Filter and Sort Controls */}
       <div className="filter-controls-container">
         {/* Category Chips */}
@@ -108,7 +96,7 @@ function HomeScreen() {
             sortedProducts.map((item) => (
               <ProductCard key={item._id} product={item} />
             ))
-          ) : searchTerm.trim() !== '' || selectedCategory !== 'All' ? (
+          ) : (searchTerm || '').trim() !== '' || selectedCategory !== 'All' ? (
             <p className="no-products-msg">No products found matching your criteria.</p>
           ) : (
             <p className="no-products-msg">No products available in the store right now.</p>

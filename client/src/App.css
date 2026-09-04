@@ -1,10 +1,16 @@
-/* index.css / App.css */
+/* =========================
+   GLOBAL RESET & WRAPPERS
+   ========================= */
+
 html, body {
   margin: 0;
   padding: 0;
   width: 100%;
   min-height: 100vh;
   box-sizing: border-box;
+  background-color: #12141a;
+  color: #f1f2f6;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
 }
 
 #root {
@@ -15,136 +21,36 @@ html, body {
 
 .shop-container {
   width: 100%;
-  max-width: 100%; /* Remove any fixed max-width like 1200px or 80% */
+  max-width: 100%;
   margin: 0;
   padding: 0;
 }
 
-.add-to-cart:hover {
-  background: #ff4757;   /* Nice little hover effect for your store */
-}
-
-.product-details {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 40px;
-  margin-top: 20px;
-  background: white;
-  padding: 30px;
-  border-radius: 15px;
-}
-
-.details-image img {
-  max-width: 400px;
-  width: 100%;
-  border-radius: 10px;
-}
-
-.details-info {
-  flex: 1;
-  min-width: 300px;
-  text-align: left;
-}
-
-.price-large {
-  font-size: 2rem;
-  font-weight: bold;
-  color: #2f3542;
-  margin: 20px 0;
-}
-
-.in-stock { color: green; font-weight: bold; }
-.out-of-stock { color: red; font-weight: bold; }
-
-.add-to-cart-large {
-  background: #ff4757;
-  color: white;
-  border: none;
-  padding: 15px 30px;
-  font-size: 1.2rem;
-  border-radius: 8px;
-  cursor: pointer;
-  margin-top: 20px;
-}
-
-.add-to-cart-large:disabled {
-  background: #ccc;
-  cursor: not-allowed;
-}
-
-.search-section {
-  display: flex;
-  justify-content: center;
-  margin: 20px 0;
-}
+/* =========================
+   MAIN HEADER & NAVIGATION
+   ========================= */
 
 .main-header {
+  position: relative;
   display: flex;
   justify-content: space-between;
-  align-items: center; /* This is what aligns the text and icon vertically */
-  padding: 1rem 2rem;
-  background-color: #1a1a1a; /* Dark theme for a professional anime shop look */
+  align-items: center;
+  padding: 0 2rem;
+  background-color: #151821;
   color: white;
   border-bottom: 2px solid #ff4757;
+  height: 65px;
+  box-sizing: border-box;
 }
 
-.logo {
-  cursor: pointer;
-  margin: 0;
-  font-size: 1.8rem;
-  transition: color 0.3s;
-}
-
-.logo:hover {
-  color: #ff4757;
-}
-
-.cart-container {
-  display: flex;
-  align-items: center;
-  position: relative;
-  cursor: pointer;
-}
-
-.cart-emoji {
-  font-size: 1.8rem;
-}
-
-.cart-badge {
-  background-color: #ff4757;
-  color: white;
-  font-size: 0.75rem;
-  font-weight: bold;
-  border-radius: 50%;
-  padding: 2px 7px;
-  position: absolute;
-  top: -5px;
-  right: -10px;
-  /* This creates the "floating" badge effect often seen on real apps */
-}
-
-.main-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 2rem;
-}
-
+/* Left Auth Links */
 .header-links {
   display: flex;
   align-items: center;
   gap: 20px;
+  z-index: 5;
 }
 
-.logout-btn {
-  background: none;
-  border: 1px solid #ff4757;
-  color: #ff4757;
-  padding: 4px 8px;
-  border-radius: 4px;
-  cursor: pointer;
-  margin-left: 10px;
-}
 .user-menu {
   display: flex;
   align-items: center;
@@ -170,4 +76,230 @@ html, body {
 .user-icon {
   display: inline-block;
   vertical-align: middle;
+}
+
+.logout-btn {
+  background: none;
+  border: 1px solid #ff4757;
+  color: #ff4757;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.logout-btn:hover {
+  background: #ff4757;
+  color: white;
+}
+
+/* =====================================
+   CENTER BRAND & EXPANDING SEARCH OVERLAY
+   ===================================== */
+
+.header-center {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  max-width: 520px;
+  height: 44px;
+  margin: 0 16px;
+}
+
+/* Brand Title & Fade Out */
+.logo-link {
+  text-decoration: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.logo-link.logo-hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.95);
+}
+
+.logo {
+  cursor: pointer;
+  margin: 0;
+  font-size: 1.6rem;
+  color: #ffffff;
+  white-space: nowrap;
+  transition: color 0.3s;
+}
+
+.logo:hover {
+  color: #ff4757;
+}
+
+/* Collapsed Search Icon: Sits just right of the title text */
+.nav-search-overlay {
+  position: absolute;
+  right: calc(50% - 170px);
+  display: flex;
+  align-items: center;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 24px;
+  height: 40px;
+  width: 40px;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 10;
+}
+
+/* Expanded Search Bar: Stretches and covers the title */
+.nav-search-overlay.expanded {
+  left: 0;
+  right: 0;
+  width: 100%;
+  background: #1e222d;
+  border-color: #ff4757;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+  padding: 0 6px;
+}
+
+/* Toggle Action Button */
+.nav-search-btn {
+  background: transparent;
+  border: none;
+  color: #a4b0be;
+  width: 38px;
+  height: 38px;
+  min-width: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: color 0.2s ease;
+}
+
+.nav-search-btn:hover {
+  color: #ff4757;
+}
+
+/* Input text field inside expanded bar */
+.nav-search-field {
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #ffffff;
+  font-size: 0.95rem;
+  padding: 0 10px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease 0.1s;
+}
+
+.nav-search-overlay.expanded .nav-search-field {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.nav-search-field::placeholder {
+  color: #747d8c;
+}
+
+/* =========================
+   RIGHT CART COUNTER
+   ========================= */
+
+.cart-container {
+  display: flex;
+  align-items: center;
+  position: relative;
+  cursor: pointer;
+  z-index: 5;
+}
+
+.cart-link {
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  align-items: center;
+}
+
+.cart-emoji {
+  font-size: 1.6rem;
+}
+
+.cart-badge {
+  background-color: #ff4757;
+  color: white;
+  font-size: 0.75rem;
+  font-weight: bold;
+  border-radius: 50%;
+  padding: 2px 7px;
+  position: absolute;
+  top: -5px;
+  right: -10px;
+}
+
+/* =========================
+   LEGACY DETAILS & BUTTONS
+   ========================= */
+
+.product-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px;
+  margin-top: 20px;
+  background: white;
+  padding: 30px;
+  border-radius: 15px;
+  color: #333;
+}
+
+.details-image img {
+  max-width: 400px;
+  width: 100%;
+  border-radius: 10px;
+}
+
+.details-info {
+  flex: 1;
+  min-width: 300px;
+  text-align: left;
+}
+
+.price-large {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #2f3542;
+  margin: 20px 0;
+}
+
+.in-stock { color: #2ed573; font-weight: bold; }
+.out-of-stock { color: #ff4757; font-weight: bold; }
+
+.add-to-cart:hover {
+  background: #ff4757;
+}
+
+.add-to-cart-large {
+  background: #ff4757;
+  color: white;
+  border: none;
+  padding: 15px 30px;
+  font-size: 1.2rem;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: background 0.2s ease;
+}
+
+.add-to-cart-large:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .nav-search-overlay {
+    right: 10px;
+  }
 }

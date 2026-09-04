@@ -1,6 +1,5 @@
-// Here contains the main App component, which sets up the routing for the application, manages user authentication state, and displays the header with navigation links and cart information.
-
-import { Routes, Route, Link } from 'react-router-dom';
+import { useState, useRef, useEffect } from 'react';
+import { Routes, Route, Link, useNavigate } from 'react-router-dom';
 
 import HomeScreen from './pages/HomeScreen';
 import ProductScreen from './pages/ProductScreen';
@@ -18,8 +17,33 @@ import './App.css';
 function App() {
   const { userInfo, logout } = useUser();
   const { cartItems } = useCart();
+  const navigate = useNavigate();
+
+  const [searchTerm, setSearchTerm] = useState('');
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const searchInputRef = useRef(null);
 
   const cartCount = cartItems.reduce((acc, item) => acc + item.qty, 0);
+
+  useEffect(() => {
+    if (isSearchOpen && searchInputRef.current) {
+      searchInputRef.current.focus();
+    }
+  }, [isSearchOpen]);
+
+  const toggleSearch = () => {
+    if (isSearchOpen) {
+      setSearchTerm('');
+    }
+    setIsSearchOpen((prev) => !prev);
+  };
+
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+    if (window.location.pathname !== '/') {
+      navigate('/');
+    }
+  };
 
   return (
     <div className="shop-container">
@@ -28,7 +52,6 @@ function App() {
         <div className="header-links">
           {userInfo ? (
             <div className="user-menu">
-              {/* Profile Link with Solid/Filled Profile Icon */}
               <Link to="/profile" className="profile-nav-link">
                 <svg
                   className="user-icon"
@@ -44,7 +67,6 @@ function App() {
               <button onClick={logout} className="logout-btn">Logout</button>
             </div>
           ) : (
-            /* Login Link with Outlined/Non-filled Profile Icon */
             <Link to="/login" className="login-nav-link">
               <svg
                 className="user-icon"
@@ -65,12 +87,45 @@ function App() {
           )}
         </div>
 
-        <Link to="/" className="logo-link">
-          <h1 className="logo">Anime Merch Store</h1>
-        </Link>
-        
+        {/* Center: Title + Expanding Overlay Search */}
+        <div className="header-center">
+          <Link to="/" className={`logo-link ${isSearchOpen ? 'logo-hidden' : ''}`}>
+            <h1 className="logo">Anime Merch Store</h1>
+          </Link>
+
+          <div className={`nav-search-overlay ${isSearchOpen ? 'expanded' : ''}`}>
+            <button
+              type="button"
+              className="nav-search-btn"
+              onClick={toggleSearch}
+              title={isSearchOpen ? 'Close Search' : 'Open Search'}
+            >
+              {isSearchOpen ? (
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              ) : (
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+              )}
+            </button>
+
+            <input
+              ref={searchInputRef}
+              type="text"
+              value={searchTerm}
+              placeholder="Search anime loot, manga, plushies..."
+              className="nav-search-field"
+              onChange={handleSearchChange}
+            />
+          </div>
+        </div>
+
         <div className="cart-container">
-          <Link to="/cart" className="cart-container">
+          <Link to="/cart" className="cart-link">
             <span className="cart-emoji">🛒</span>
             <span className="cart-badge">{cartCount}</span>
           </Link>
@@ -79,7 +134,7 @@ function App() {
 
       <main>
         <Routes>
-          <Route path="/" element={<HomeScreen />} />
+          <Route path="/" element={<HomeScreen searchTerm={searchTerm} />} />
           <Route path="/product/:id" element={<ProductScreen />} />
           <Route path="/cart" element={<CartScreen />} />
           <Route path="/checkout" element={<CheckoutScreen />} />

@@ -8,26 +8,75 @@
   box-sizing: border-box;
 }
 
+/* Search Container */
 .search-section {
   display: flex;
-  justify-content: center;
-  margin: 20px 0;
+  justify-content: flex-end;
+  margin-bottom: 20px;
 }
 
-.search-bar {
-  width: 100%;
-  max-width: 500px;
-  padding: 12px 20px;
-  font-size: 1rem;
-  border: 2px solid #ddd;
+/* Expandable Wrapper */
+.search-bar-wrapper {
+  display: flex;
+  align-items: center;
+  background: #1e222d;
+  border: 1px solid #2f3542;
   border-radius: 25px;
-  outline: none;
-  transition: border-color 0.3s;
+  padding: 4px;
+  transition: all 0.35s ease;
+  width: 44px; /* Icon-only circular button when collapsed */
+  overflow: hidden;
 }
 
-.search-bar:focus {
+/* Expanded state */
+.search-bar-wrapper.open {
+  width: 100%;
+  max-width: 450px;
   border-color: #ff4757;
-  box-shadow: 0 0 8px rgba(255, 71, 87, 0.2);
+  box-shadow: 0 4px 14px rgba(255, 71, 87, 0.15);
+}
+
+/* Round Toggle Button */
+.search-toggle-btn {
+  background: transparent;
+  border: none;
+  color: #a4b0be;
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: color 0.2s, background 0.2s;
+}
+
+.search-toggle-btn:hover {
+  color: #ff4757;
+}
+
+/* Hidden by default, fades in when parent expands */
+.search-bar-wrapper .search-bar {
+  flex: 1;
+  border: none;
+  background: transparent;
+  color: #f1f2f6;
+  font-size: 0.95rem;
+  padding: 0 12px;
+  outline: none;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease 0.1s;
+}
+
+.search-bar-wrapper.open .search-bar {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.search-bar::placeholder {
+  color: #747d8c;
 }
 
 /* HomeScreen.css */
