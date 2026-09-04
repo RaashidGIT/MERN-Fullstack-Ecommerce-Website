@@ -27,7 +27,7 @@ const ProfileSidebar = ({ userInfo, activeTab, setActiveTab, counts, logout }) =
           className={`profile-nav-btn ${activeTab === 'orders' ? 'active' : ''}`}
           onClick={() => setActiveTab('orders')}
         >
-          📜 Order History ({counts.orders})
+          📜 Order History
         </button>
 
         <button
@@ -35,7 +35,8 @@ const ProfileSidebar = ({ userInfo, activeTab, setActiveTab, counts, logout }) =
           className={`profile-nav-btn ${activeTab === 'listings' ? 'active' : ''}`}
           onClick={() => setActiveTab('listings')}
         >
-          📦 My Listings ({counts.listings})
+          📦 My Listings
+          {/* 📦 My Listings ({counts.listings}) */}
         </button>
 
         <button

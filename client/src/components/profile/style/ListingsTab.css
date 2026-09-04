@@ -1,0 +1,52 @@
+.listing-item-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.delete-listing-btn {
+  background: rgba(255, 71, 87, 0.12);
+  color: #ff4757;
+  border: 1px solid rgba(255, 71, 87, 0.4);
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  transition: all 0.2s ease;
+}
+
+.delete-listing-btn:hover {
+  background: #ff4757;
+  color: #ffffff;
+}
+
+/* Sorting dropdown styles */
+.section-header-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  width: 100%;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.header-controls-group {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.wishlist-sort-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Hide Add to Cart inside seller listing cards
+.listing-item-wrapper .add-to-cart {
+  display: none !important;
+}
+*/

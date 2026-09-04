@@ -1,3 +1,4 @@
+import path from 'path';
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
@@ -5,6 +6,7 @@ import mongoose from 'mongoose';
 import productRoutes from './routes/productRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
+import uploadRoutes from './routes/uploadRoutes.js';
 
 // 1. Load Environment Variables FIRST
 dotenv.config();
@@ -20,6 +22,11 @@ app.use(express.json());
 app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/upload', uploadRoutes);
+
+// Make uploads folder publicly accessible
+const __dirname = path.resolve();
+app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
 
 app.get("/api/test", (req, res) => {
   res.json({ message: "Backend is working!" });

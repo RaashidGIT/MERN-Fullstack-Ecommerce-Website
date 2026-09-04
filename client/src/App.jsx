@@ -9,6 +9,7 @@ import RegisterScreen from './pages/RegisterScreen';
 import CartScreen from './pages/CartScreen';
 import CheckoutScreen from './pages/CheckoutScreen';
 import ProfileScreen from './pages/ProfileScreen';
+import AddProductScreen from './pages/AddProductScreen';
 import Toast from './components/Toast';
 import './App.css';
 
@@ -82,6 +83,7 @@ function App() {
           <Route path="/checkout" element={<CheckoutScreen />} />
           <Route path="/profile" element={<ProfileScreen />} />
           <Route path="/login" element={<LoginScreen />} />
+          <Route path="/add-product" element={<AddProductScreen />} />
           <Route path="/register" element={<RegisterScreen />} />
         </Routes>
       </main>

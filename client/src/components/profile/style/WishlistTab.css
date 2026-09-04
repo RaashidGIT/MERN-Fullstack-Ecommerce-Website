@@ -105,3 +105,28 @@
 .profile-content-area .add-to-cart {
   width: 100% !important;
 }
+
+/* Wishlist Remove Button Styles */
+.wishlist-item-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.wishlist-remove-btn {
+  background: rgba(255, 71, 87, 0.12);
+  color: #ff4757;
+  border: 1px solid rgba(255, 71, 87, 0.4);
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  transition: all 0.2s ease;
+}
+
+.wishlist-remove-btn:hover {
+  background: #ff4757;
+  color: #ffffff;
+}
