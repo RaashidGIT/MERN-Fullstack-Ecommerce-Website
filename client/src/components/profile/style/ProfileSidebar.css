@@ -1,0 +1,93 @@
+/* Sidebar container */
+.profile-sidebar {
+  flex: 0 0 280px;
+  background: #1e222d;
+  padding: 2rem;
+  border-radius: 12px;
+  text-align: center;
+  border: 1px solid #2f3542;
+}
+
+/* User avatar letter badge */
+.user-avatar-badge {
+  width: 70px;
+  height: 70px;
+  margin: 0 auto 1rem;
+  background: #ff4757;
+  color: #ffffff;
+  font-size: 2rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.profile-sidebar h2 {
+  margin: 0;
+  font-size: 1.3rem;
+  color: #f1f2f6;
+}
+
+.user-email-text {
+  color: #a4b0be;
+  font-size: 0.9rem;
+  margin-top: 4px;
+  margin-bottom: 1.5rem;
+}
+
+/* Navigation button group */
+.profile-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 1.5rem;
+}
+
+.profile-nav-btn {
+  background: transparent;
+  color: #ced6e0;
+  border: none;
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 0.95rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.profile-nav-btn:hover {
+  background: #2f3542;
+  color: #ffffff;
+}
+
+.profile-nav-btn.active {
+  background: #ff4757;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+/* Sign out button */
+.logout-action-btn {
+  width: 100%;
+  padding: 10px;
+  background: transparent;
+  border: 1px solid #ff4757;
+  color: #ff4757;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.logout-action-btn:hover {
+  background: #ff4757;
+  color: #ffffff;
+}
+
+@media (max-width: 768px) {
+  .profile-sidebar {
+    width: 100%;
+    box-sizing: border-box;
+  }
+}

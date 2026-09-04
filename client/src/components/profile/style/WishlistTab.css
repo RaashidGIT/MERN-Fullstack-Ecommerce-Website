@@ -1,0 +1,107 @@
+/* Product Grid */
+.profile-products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.5rem;
+}
+
+/* Sort dropdown controls */
+.wishlist-sort-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sort-label {
+  color: #a4b0be;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.profile-sort-select {
+  background: #2f3542;
+  color: #f1f2f6;
+  border: 1px solid #57606f;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.profile-sort-select:hover:not(:disabled),
+.profile-sort-select:focus {
+  border-color: #ff4757;
+  background: #3a404d;
+}
+
+.profile-sort-select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.profile-sort-select option {
+  background: #1e222d;
+  color: #f1f2f6;
+}
+
+/* Product Card profile overrides: force containment and single action button */
+.profile-content-area .product-card .product-image {
+  width: 100%;
+  height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ffffff;
+  overflow: hidden;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.profile-content-area .product-card .product-image img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  display: block;
+}
+
+.profile-content-area .product-card .product-info h3 {
+  color: #2f3542 !important;
+  font-size: 0.85rem;
+  line-height: 1.25;
+  margin: 4px 0 6px 0;
+  min-height: 2.4em;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.profile-content-area .product-card .product-info .category {
+  color: #747d8c !important;
+  font-size: 0.72rem;
+}
+
+.profile-content-area .product-card .product-info .price {
+  color: #1e222d !important;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+/* Hide the wishlist toggle button inside the profile view */
+.profile-content-area .product-actions button:nth-child(2) {
+  display: none !important;
+}
+
+.profile-content-area .card-btn-group {
+  display: block !important;
+  width: 100% !important;
+}
+
+.profile-content-area .add-to-cart {
+  width: 100% !important;
+}
