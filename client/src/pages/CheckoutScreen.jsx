@@ -1,10 +1,14 @@
 import { useState } from 'react';
 import { useCart } from '../context/CartContext';
 import { useNavigate } from 'react-router-dom';
+import { useWishlist } from '../context/useWishlist';
+import { useUser } from '../context/UserContext';
 import './style/CheckoutScreen.css';
 
 const CheckoutScreen = () => {
     const { cartItems, totalPrice, clearCart } = useCart();
+    const { refreshWishlist } = useWishlist();
+    const { userInfo } = useUser();
     const navigate = useNavigate();
 
     const [address, setAddress] = useState({
@@ -16,11 +20,18 @@ const CheckoutScreen = () => {
 
     const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log('User inside component:', userInfo);
+
+    if (!userInfo?.token) {
+      alert('Please log in before placing an order.');
+      navigate('/login');
+      return;
+    }
 
     // 1. Show your charming starting message
     alert("Processing your Anime Loot... 💳");
 
-    // 2. Prepare the data for MongoDB
+    // 2. Prepare the order data for MongoDB
     const orderData = {
         orderItems: cartItems.map(item => ({
         name: item.name,
@@ -36,17 +47,21 @@ const CheckoutScreen = () => {
     try {
         // 3. Send the data to the Backend
         const res = await fetch('http://localhost:5000/api/orders', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(orderData),
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${userInfo.token}`, // <-- Pass the auth token here
+            },
+            body: JSON.stringify(orderData),
         });
 
         if (res.ok) {
         // 4. Wait for the "Simulation" delay so the user feels the "Processing"
         setTimeout(() => {
             clearCart();
-            alert("Order Placed Successfully! Arigato! 🎉"); // Your success message
-            navigate('/'); 
+            refreshWishlist(); // Refresh the wishlist after order placement
+            alert("Order Placed Successfully! Arigato! 🎉"); // Success message
+            navigate('/profile', { state: { defaultTab: 'orders' } });
         }, 2000);
         } else {
         alert("Oops! The Ninja system hit a snag. Please try again.");

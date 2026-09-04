@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
-import { useWishlist } from '../context/WishlistContext';
+import { useWishlist } from '../context/useWishlist';
 import ProductCard from '../components/productCard';
 import './style/ProfileScreen.css';
 import '../App.css';
@@ -10,15 +10,20 @@ const ProfileScreen = () => {
   const { userInfo, logout } = useUser();
   const { wishlistItems } = useWishlist();
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const [activeTab, setActiveTab] = useState('profile'); // 'profile' | 'wishlist' | 'listings'
+  const [activeTab, setActiveTab] = useState(location.state?.defaultTab || 'wishlist'); // 'profile' | 'wishlist' | 'listings'
+  const [orders, setOrders] = useState([]);
+  const [loadingOrders, setLoadingOrders] = useState(false);
+  const [currentTime, setCurrentTime] = useState(Date.now());
+  
   const [myListings, setMyListings] = useState([]);
   const [loadingListings, setLoadingListings] = useState(false);
   const [sortBy, setSortBy] = useState('default');
 
   // Delete modal & loading states
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
+  // const [isDeleting, setIsDeleting] = useState(false);
 
   // Redirect to login if unauthenticated
   useEffect(() => {
@@ -62,6 +67,72 @@ const ProfileScreen = () => {
         .catch(() => setLoadingListings(false));
     }
   }, [userInfo, activeTab]);
+
+  // 1-second interval to dynamically re-evaluate the 10-minute cancellation window
+  useEffect(() => {
+    const timer = setInterval(() => setCurrentTime(Date.now()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  // Fetch Orders
+  const fetchMyOrders = async () => {
+    if (!userInfo?.token) return;
+
+    setLoadingOrders(true);
+      try {
+        const res = await fetch('http://localhost:5000/api/orders/myorders', {
+          headers: { 
+            Authorization: `Bearer ${userInfo.token}` 
+          },
+        });
+        const data = await res.json();
+        console.log('Fetched Orders:', data); // Inspect what returns
+        setOrders(Array.isArray(data) ? data : []);
+      } catch (error) {
+        console.error('Failed to load orders:', error);
+      } finally {
+        setLoadingOrders(false);
+      }
+    };
+
+    useEffect(() => {
+      if (activeTab === 'orders' && userInfo) {
+        fetchMyOrders();
+      }
+    }, [activeTab, userInfo]);
+
+  // Cancel Order Handler
+  const handleCancelOrder = async (orderId) => {
+  if (!window.confirm('Are you sure you want to cancel this order?')) return;
+
+  try {
+    const res = await fetch(`http://localhost:5000/api/orders/${orderId}/cancel`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      alert('Order cancelled successfully.');
+
+      // Update state directly so the button changes immediately to "Cancelled"
+      setOrders((prevOrders) =>
+        prevOrders.map((order) =>
+          order._id === orderId ? { ...order, isCancelled: true } : order
+        )
+      );
+    } else {
+      alert(data.message || 'Failed to cancel order.');
+    }
+  } catch (err) {
+    console.error('Cancel order error:', err);
+    alert('Error connecting to server.');
+  }
+};
 
   // Handle Account Deletion
   const handleDeleteAccount = async () => {
@@ -110,13 +181,26 @@ const ProfileScreen = () => {
           >
             ❤️ Wishlist ({wishlistItems?.length || 0})
           </button>
+
+          {/* Order History: Only active when activeTab === 'orders' */}
+          <button
+            type="button"
+            className={`profile-nav-btn ${activeTab === 'orders' ? 'active' : ''}`}
+            onClick={() => setActiveTab('orders')}
+          >
+            📜 Order History ({orders?.length || 0})
+          </button>
+
+          {/* My Listings: Only active when activeTab === 'listings' */}
           <button
             type="button"
             className={`profile-nav-btn ${activeTab === 'listings' ? 'active' : ''}`}
             onClick={() => setActiveTab('listings')}
           >
-            📦 My Listings ({myListings.length})
+            📦 My Listings ({myListings?.length || 0})
           </button>
+
+          {/* About Account: Only active when activeTab === 'profile' */}
           <button
             type="button"
             className={`profile-nav-btn ${activeTab === 'profile' ? 'active' : ''}`}
@@ -171,6 +255,87 @@ const ProfileScreen = () => {
               </div>
             )}
           </div>
+        )}
+
+        {/* Order History Tab */}
+        {activeTab === 'orders' && (
+          <section className="profile-section">
+            <h3 className="settings-header-title">Order History</h3>
+            {loadingOrders ? (
+              <p>Loading your orders...</p>
+            ) : orders.length === 0 ? (
+              <div className="empty-tab-box">
+                <p>You haven't placed any orders yet.</p>
+              </div>
+            ) : (
+              <div className="order-history-list">
+                {orders.map((order) => {
+                  const orderDate = new Date(order.createdAt).getTime();
+                  const diffMinutes = (currentTime - orderDate) / (1000 * 60);
+                  const isExpired = diffMinutes >= 10;
+                  const minutesLeft = Math.max(0, Math.ceil(10 - diffMinutes));
+
+                  return (
+                    <div key={order._id} className="order-history-card">
+                      <div className="order-header-row">
+                        <div>
+                          <span className="order-id">Order ID: #{order._id.slice(-8)}</span>
+                          <span className="order-date">
+                            {new Date(order.createdAt).toLocaleString()}
+                          </span>
+                        </div>
+                        <div className="order-status-badge">
+                          {order.isCancelled ? (
+                            <span className="status-cancelled">Cancelled</span>
+                          ) : (
+                            <span className="status-placed">Order Confirmed</span>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="order-items-grid">
+                        {order.orderItems.map((item, idx) => (
+                          <div key={idx} className="order-item-inline">
+                            <img src={item.image} alt={item.name} />
+                            <div>
+                              <p className="order-item-title">{item.name}</p>
+                              <p className="order-item-details">
+                                {item.qty} × ${item.price.toFixed(2)}
+                              </p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+
+                      <div className="order-footer-row">
+                        <span className="order-total">
+                          Total: ${order.totalPrice.toFixed(2)}
+                        </span>
+
+                        <div className="cancel-action-wrapper">
+                          {order.isCancelled ? (
+                            <span className="status-cancelled">Cancelled</span>
+                          ) : isExpired ? (
+                            <button type="button" className="cancel-order-btn-disabled" disabled>
+                              Order cannot be cancelled anymore
+                            </button>
+                          ) : (
+                            <button
+                              type="button"
+                              className="cancel-order-btn-active"
+                              onClick={() => handleCancelOrder(order._id)}
+                            >
+                              Cancel Order ({minutesLeft}m left)
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </section>
         )}
 
         {/* Listings Tab */}

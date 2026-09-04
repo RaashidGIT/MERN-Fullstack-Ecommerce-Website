@@ -1,42 +1,32 @@
-import { createContext, useState, useContext, useEffect, useCallback } from 'react';
+import { createContext, useState, useEffect, useCallback } from 'react';
 import { useUser } from './UserContext';
 
-const WishlistContext = createContext();
+export const WishlistContext = createContext();
 
-export const WishlistProvider = ({ children }) => {
+export function WishlistProvider({ children }) {
   const { userInfo } = useUser();
   const [wishlistItems, setWishlistItems] = useState([]);
-  const [loadingWishlist, setLoadingWishlist] = useState(false);
 
-  // Fetch from DB when user logs in, or fallback to guest localStorage
-  useEffect(() => {
+  const fetchWishlist = useCallback(() => {
     if (userInfo && userInfo.token) {
-      setLoadingWishlist(true);
       fetch('http://localhost:5000/api/users/wishlist', {
-        headers: {
-          Authorization: `Bearer ${userInfo.token}`,
-        },
+        headers: { Authorization: `Bearer ${userInfo.token}` },
       })
         .then((res) => res.json())
-        .then((data) => {
-          setWishlistItems(Array.isArray(data) ? data : []);
-          setLoadingWishlist(false);
-        })
-        .catch((err) => {
-          console.error('Failed to load wishlist from DB:', err);
-          setLoadingWishlist(false);
-        });
+        .then((data) => setWishlistItems(Array.isArray(data) ? data : []))
+        .catch((err) => console.error('Error fetching wishlist:', err));
     } else {
-      // Guest mode: Read from localStorage
       const guestSaved = localStorage.getItem('guestWishlist');
       setWishlistItems(guestSaved ? JSON.parse(guestSaved) : []);
     }
   }, [userInfo]);
 
-  // Toggle wishlist item handler
+  useEffect(() => {
+    fetchWishlist();
+  }, [fetchWishlist]);
+
   const toggleWishlist = useCallback(
     async (product) => {
-      // 1. Authenticated Mode: Send update to MongoDB
       if (userInfo && userInfo.token) {
         try {
           const res = await fetch(
@@ -54,10 +44,9 @@ export const WishlistProvider = ({ children }) => {
             setWishlistItems(data);
           }
         } catch (error) {
-          console.error('Failed to sync wishlist with DB:', error);
+          console.error('Failed to update wishlist:', error);
         }
       } else {
-        // 2. Guest Mode: Update state and localStorage
         setWishlistItems((prev) => {
           const exists = prev.some((item) => item._id === product._id);
           const updated = exists
@@ -75,17 +64,14 @@ export const WishlistProvider = ({ children }) => {
 
   return (
     <WishlistContext.Provider
-      value={{ wishlistItems, toggleWishlist, isInWishlist, loadingWishlist }}
+      value={{
+        wishlistItems,
+        toggleWishlist,
+        isInWishlist,
+        refreshWishlist: fetchWishlist,
+      }}
     >
       {children}
     </WishlistContext.Provider>
   );
-};
-
-export const useWishlist = () => {
-  const context = useContext(WishlistContext);
-  if (!context) {
-    throw new Error('useWishlist must be used within a WishlistProvider');
-  }
-  return context;
-};
+}
