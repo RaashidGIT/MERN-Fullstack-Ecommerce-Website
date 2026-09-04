@@ -61,6 +61,7 @@
   font-size: 2rem;
   font-weight: bold;
   margin: 1rem 0;
+  color: #7d7e7f;
 }
 
 .page-description {
@@ -74,6 +75,7 @@
   padding: 10px;
   background: #f9f9f9;
   border-radius: 5px;
+  color: #333434;
 }
 
 .in-stock { color: #2ed573; font-weight: bold; }
@@ -96,7 +98,7 @@
 }
 
 .add-to-cart-btn:disabled {
-  background: #ccc;
+  background: #9ea0a1;
   cursor: not-allowed;
 }
 
