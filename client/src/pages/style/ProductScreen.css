@@ -164,3 +164,22 @@
   text-align: center;
   color: #2f3542;
 }
+
+/* Seller badge styling */
+.product-meta-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.seller-badge {
+  font-size: 1rem;
+  color: #ff4757;
+}
+
+.seller-badge strong {
+  color: #ff4757;
+  font-weight: 600;
+  margin-left: 4px;
+}

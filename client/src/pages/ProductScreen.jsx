@@ -71,6 +71,14 @@ const ProductScreen = () => {
             )}
           </div>
 
+          {/* Category & Seller Row */}
+          <div className="product-meta-header">
+            <div className="seller-badge">
+              <span>Sold by :</span>
+              <strong>{product.user?.name || 'Verified Store'}</strong>
+            </div>
+          </div>
+
           {/* 2. Quantity Counter Section */}
           {product.countInStock > 0 && (
             <div className="qty-picker-container">
