@@ -188,7 +188,7 @@ const ProfileScreen = () => {
             className={`profile-nav-btn ${activeTab === 'orders' ? 'active' : ''}`}
             onClick={() => setActiveTab('orders')}
           >
-            📜 Order History ({orders?.length || 0})
+            📜 Order History
           </button>
 
           {/* My Listings: Only active when activeTab === 'listings' */}
