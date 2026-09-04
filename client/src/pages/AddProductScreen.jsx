@@ -7,12 +7,9 @@ const AddProductScreen = () => {
   const { userInfo } = useUser();
   const navigate = useNavigate();
 
-  // Mode toggle: local disk upload vs. direct web link
   const [imageMode, setImageMode] = useState('picker'); // 'picker' | 'url'
   const [uploading, setUploading] = useState(false);
-  const [imagePreview, setImagePreview] = useState('');
 
-  // Form field state
   const [formData, setFormData] = useState({
     name: '',
     price: '',
@@ -25,25 +22,17 @@ const AddProductScreen = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // Route guard: unauthenticated users cannot access listing creation
   useEffect(() => {
     if (!userInfo) {
       navigate('/login');
     }
   }, [userInfo, navigate]);
 
-  // Generic controlled input handler
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-
-    // Keep URL-based preview in sync
-    if (name === 'image') {
-      setImagePreview(value);
-    }
   };
 
-  // Uploads local file to Multer endpoint and stores public path
   const handleFileUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -62,7 +51,6 @@ const AddProductScreen = () => {
         const filePath = await res.text();
         const fullPath = `http://localhost:5000${filePath}`;
         setFormData((prev) => ({ ...prev, image: fullPath }));
-        setImagePreview(fullPath);
       } else {
         alert('Image upload failed. Ensure the file is a supported image format.');
       }
@@ -74,7 +62,6 @@ const AddProductScreen = () => {
     }
   };
 
-  // Submits product document to backend with seller authorization
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -96,7 +83,6 @@ const AddProductScreen = () => {
         body: JSON.stringify(formData),
       });
 
-      // Safely parse JSON or text to avoid HTML 404/500 JSON crash
       const responseText = await res.text();
       let responseData;
       try {
@@ -141,7 +127,7 @@ const AddProductScreen = () => {
             />
           </div>
 
-          <div className="form-row">
+          <div className="form-row-three">
             <div className="form-group">
               <label htmlFor="price">Price ($USD)</label>
               <input
@@ -158,6 +144,19 @@ const AddProductScreen = () => {
             </div>
 
             <div className="form-group">
+              <label htmlFor="countInStock">Stock</label>
+              <input
+                id="countInStock"
+                name="countInStock"
+                type="number"
+                min="1"
+                value={formData.countInStock}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            <div className="form-group">
               <label htmlFor="category">Category</label>
               <select
                 id="category"
@@ -166,15 +165,17 @@ const AddProductScreen = () => {
                 onChange={handleChange}
               >
                 <option value="Manga">Manga</option>
-                <option value="Figures">Figures</option>
+                <option value="Blu-ray/Media">Blu-ray/Media</option>
+                <option value="Figurine">Figurine</option>
+                <option value="Plushie">Plushie</option>
+                <option value="Game">Game</option>
                 <option value="Apparel">Apparel</option>
-                <option value="Media">Media / Blu-ray</option>
-                <option value="Collectibles">Collectibles</option>
+                <option value="Accessory">Accessory</option>
+                <option value="Other">Other</option>
               </select>
             </div>
           </div>
 
-          {/* Dual-Mode Image Input */}
           <div className="form-group image-selection-group">
             <label>Product Image</label>
             <div className="image-mode-toggle">
@@ -215,24 +216,11 @@ const AddProductScreen = () => {
               />
             )}
 
-            {imagePreview && (
+            {formData.image && (
               <div className="image-preview-box">
-                <img src={imagePreview} alt="Preview" />
+                <img src={formData.image} alt="Preview" />
               </div>
             )}
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="countInStock">Stock Quantity</label>
-            <input
-              id="countInStock"
-              name="countInStock"
-              type="number"
-              min="1"
-              value={formData.countInStock}
-              onChange={handleChange}
-              required
-            />
           </div>
 
           <div className="form-group">
