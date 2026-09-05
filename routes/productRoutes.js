@@ -23,7 +23,7 @@ router.get('/', async (req, res) => {
 // 1. POST create a new product (// routes/productRoutes.js)
 router.post('/', protect, async (req, res) => {
   try {
-    const { name, price, description, image, category, countInStock } = req.body;
+    const { name, price, description, image, images, category, countInStock } = req.body;
 
     const product = new Product({
       user: req.user._id,
@@ -32,6 +32,7 @@ router.post('/', protect, async (req, res) => {
       user: req.user._id,
       seller: req.user._id,
       image,
+      images: Array.isArray(images) ? images : [], // Default to empty array if undefined
       category,
       countInStock: Number(countInStock) || 1,
       description,
@@ -143,6 +144,9 @@ router.put('/:id', protect, async (req, res) => {
     product.description = description ?? product.description;
     product.category = category ?? product.category;
     product.image = image ?? product.image;
+    if (req.body.images) {
+      product.images = req.body.images; // Ensure this assignment isn't missing
+    }
 
     const updatedProduct = await product.save();
     res.json(updatedProduct);

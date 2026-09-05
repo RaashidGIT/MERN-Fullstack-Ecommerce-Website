@@ -1,5 +1,3 @@
-// Here contains the logic for the Add Product screen, which allows authenticated users to list new products for sale, including handling form inputs, image uploads, and submission to the backend API.
-
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
@@ -11,6 +9,9 @@ const AddProductScreen = () => {
 
   const [imageMode, setImageMode] = useState('picker'); // 'picker' | 'url'
   const [uploading, setUploading] = useState(false);
+
+  // Additional gallery images input
+  const [extraImagesInput, setExtraImagesInput] = useState('');
 
   const [formData, setFormData] = useState({
     name: '',
@@ -70,10 +71,21 @@ const AddProductScreen = () => {
     setError('');
 
     if (!formData.image) {
-      setError('Please provide an image either via upload or direct URL.');
+      setError('Please provide a primary cover image.');
       setLoading(false);
       return;
     }
+
+    // Build submission payload with extra images array
+    const payload = {
+      ...formData,
+      price: Number(formData.price),
+      countInStock: Number(formData.countInStock),
+      images: extraImagesInput
+        .split(',')
+        .map((url) => url.trim())
+        .filter(Boolean),
+    };
 
     try {
       const res = await fetch('http://localhost:5000/api/products', {
@@ -82,7 +94,7 @@ const AddProductScreen = () => {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${userInfo.token}`,
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(payload),
       });
 
       const responseText = await res.text();
@@ -178,8 +190,9 @@ const AddProductScreen = () => {
             </div>
           </div>
 
+          {/* Primary Cover Image */}
           <div className="form-group image-selection-group">
-            <label>Product Image</label>
+            <label>Primary Cover Image</label>
             <div className="image-mode-toggle">
               <button
                 type="button"
@@ -212,7 +225,7 @@ const AddProductScreen = () => {
                 id="image"
                 name="image"
                 type="text"
-                placeholder="https://example.com/image.jpg"
+                placeholder="https://example.com/cover.jpg"
                 value={formData.image}
                 onChange={handleChange}
               />
@@ -220,9 +233,21 @@ const AddProductScreen = () => {
 
             {formData.image && (
               <div className="image-preview-box">
-                <img src={formData.image} alt="Preview" />
+                <img src={formData.image} alt="Cover Preview" />
               </div>
             )}
+          </div>
+
+          {/* Additional Gallery Angles */}
+          <div className="form-group">
+            <label htmlFor="extraImages">Additional Gallery Images (Optional)</label>
+            <input
+              id="extraImages"
+              type="text"
+              placeholder="Comma-separated image URLs (e.g. https://.../angle1.jpg, https://.../box.jpg)"
+              value={extraImagesInput}
+              onChange={(e) => setExtraImagesInput(e.target.value)}
+            />
           </div>
 
           <div className="form-group">
@@ -230,7 +255,7 @@ const AddProductScreen = () => {
             <textarea
               id="description"
               name="description"
-              rows="3"
+              rows="4"
               placeholder="Describe condition, dimensions, authenticity..."
               value={formData.description}
               onChange={handleChange}

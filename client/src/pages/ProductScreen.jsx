@@ -19,6 +19,15 @@ const ProductScreen = () => {
   const [descriptionExpanded, setDescriptionExpanded] = useState(false);
   const [descriptionOverflowing, setDescriptionOverflowing] = useState(false);
 
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [imageHeight, setImageHeight] = useState(null);
+
+  const imageRef = useRef(null);
+
+  // Gallery & Zoom State
+  const [activeImgIndex, setActiveImgIndex] = useState(0);
+  const [isZoomed, setIsZoomed] = useState(false);
+
   const descriptionRef = useRef(null);
 
   const fetchProduct = useCallback(async () => {
@@ -40,6 +49,22 @@ const ProductScreen = () => {
   useEffect(() => {
     fetchProduct();
   }, [fetchProduct]);
+
+  const handleImageLoad = () => {
+    if (imageRef.current) {
+      setImageHeight(imageRef.current.clientHeight);
+    }
+  };
+
+  const handlePrevImage = (e) => {
+    e.stopPropagation();
+    setActiveImgIndex((prev) => (prev === 0 ? allImages.length - 1 : prev - 1));
+  };
+
+  const handleNextImage = (e) => {
+    e.stopPropagation();
+    setActiveImgIndex((prev) => (prev === allImages.length - 1 ? 0 : prev + 1));
+  };
 
   const handleDecrease = () => {
     if (qty > 1) setQty(qty - 1);
@@ -67,15 +92,74 @@ const ProductScreen = () => {
   if (loading) return <LoadingSpinner message="Inspecting anime gear..." />;
   if (error) return <div className="error-msg">{error} <Link to="/">Go Back</Link></div>;
 
+  const allImages = product
+    ? [product.image, ...(Array.isArray(product.images) ? product.images : [])].filter(Boolean)
+    : [];
+
+  const currentImage = allImages[activeImgIndex] || product?.image || '';
+
   return (
     <div className="product-page">
       <Link to="/" className="back-link">← Back to Collection</Link>
 
-      <div className="product-details-container">
-        <div className="product-page-image">
-          <img src={product.image} alt={product.name} />
-        </div>
+      <div
+        className={`product-details-container ${isExpanded ? 'is-expanded' : 'is-collapsed'}`}
+        style={!isExpanded && imageHeight ? { minHeight: `${imageHeight + 80}px` } : {}}
+      >
+        {/* Left Gallery Column */}
+        <div className="product-gallery-column">
+          <div className="main-image-viewport" onClick={() => setIsZoomed(true)}>
+            <img
+              ref={imageRef}
+              src={currentImage}
+              alt={product.name}
+              onLoad={handleImageLoad}
+              className="gallery-main-img"
+            />
 
+            {/* Left / Right Arrow Buttons */}
+            {allImages.length > 1 && (
+              <>
+                <button
+                  type="button"
+                  className="gallery-arrow-btn left"
+                  onClick={handlePrevImage}
+                  title="Previous image"
+                >
+                  &#10094;
+                </button>
+                <button
+                  type="button"
+                  className="gallery-arrow-btn right"
+                  onClick={handleNextImage}
+                  title="Next image"
+                >
+                  &#10095;
+                </button>
+              </>
+            )}
+
+            <div className="zoom-hint">Click to Zoom 🔍</div>
+          </div>
+
+          {/* Small Image Thumbnails */}
+          {allImages.length > 1 && (
+            <div className="thumbnail-strip">
+              {allImages.map((imgUrl, index) => (
+                <button
+                  key={index}
+                  type="button"
+                  className={`thumbnail-btn ${activeImgIndex === index ? 'active-thumb' : ''}`}
+                  onClick={() => setActiveImgIndex(index)}
+                >
+                  <img src={imgUrl} alt={`View ${index + 1}`} />
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+        
+        {/* Right Product Details Column */}
         <div className="product-page-info">
           <span className="page-category">{product.category}</span>
           <h1>{product.name}</h1>
@@ -147,6 +231,25 @@ const ProductScreen = () => {
           </button>
         </div>
       </div>
+
+      {/* Fullscreen Lightbox Zoom Modal */}
+      {isZoomed && (
+        <div className="zoom-modal-backdrop" onClick={() => setIsZoomed(false)}>
+          <button
+            type="button"
+            className="zoom-close-btn"
+            onClick={() => setIsZoomed(false)}
+          >
+            ✕
+          </button>
+          <img
+            src={currentImage}
+            alt={`${product.name} zoomed`}
+            className="zoom-modal-img"
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
+      )}
 
       {/* Standalone Modular Reviews Section */}
       <ProductReviews product={product} onReviewAdded={fetchProduct} />

@@ -18,6 +18,7 @@ const ListingsTab = ({ userInfo, onListingsCountChange }) => {
     price: '',
     category: '',
     image: '',
+    extraImages: '',
     description: '',
   });
   const [editSaving, setEditSaving] = useState(false);
@@ -95,15 +96,16 @@ const ListingsTab = ({ userInfo, onListingsCountChange }) => {
     }
   };
 
-  // 4. Open Edit Modal
+  // 4. Open Edit Modal (pre-fills existing data & extra images)
   const handleOpenEdit = (product) => {
     setEditingProduct(product);
     setEditForm({
-      name: product.name,
-      price: product.price,
-      category: product.category,
-      image: product.image,
-      description: product.description,
+      name: product.name || '',
+      price: product.price || '',
+      category: product.category || '',
+      image: product.image || '',
+      extraImages: Array.isArray(product.images) ? product.images.join(', ') : '',
+      description: product.description || '',
     });
   };
 
@@ -111,6 +113,13 @@ const ListingsTab = ({ userInfo, onListingsCountChange }) => {
   const handleUpdateProduct = async (e) => {
     e.preventDefault();
     setEditSaving(true);
+
+    const parsedImages = editForm.extraImages
+      .split(',')
+      .map((url) => url.trim())
+      .filter(Boolean);
+
+      console.log('Images to send:', parsedImages); // Look at your browser console
 
     try {
       const res = await fetch(`http://localhost:5000/api/products/${editingProduct._id}`, {
@@ -120,8 +129,12 @@ const ListingsTab = ({ userInfo, onListingsCountChange }) => {
           Authorization: `Bearer ${userInfo.token}`,
         },
         body: JSON.stringify({
-          ...editForm,
+          name: editForm.name,
           price: Number(editForm.price),
+          category: editForm.category,
+          image: editForm.image,
+          images: parsedImages,
+          description: editForm.description,
         }),
       });
 
@@ -314,12 +327,20 @@ const ListingsTab = ({ userInfo, onListingsCountChange }) => {
                 required
               />
 
-              <label>Image URL</label>
+              <label>Main Cover Image URL</label>
               <input
                 type="text"
                 value={editForm.image}
                 onChange={(e) => setEditForm({ ...editForm, image: e.target.value })}
                 required
+              />
+
+              <label>Additional Angles / Views (comma-separated URLs)</label>
+              <input
+                type="text"
+                value={editForm.extraImages}
+                placeholder="https://.../side.jpg, https://.../back.jpg"
+                onChange={(e) => setEditForm({ ...editForm, extraImages: e.target.value })}
               />
 
               <label>Description</label>

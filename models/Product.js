@@ -41,7 +41,8 @@ const productSchema = new mongoose.Schema(
         'Other',
       ],
     },
-    image: { type: String, required: true },
+    image: { type: String, required: true } , // Main cover
+    images: [{ type: String }],              // Additional gallery images
     countInStock: { type: Number, required: true, default: 0 },
     rating: { type: Number, required: true, default: 0 },
     reviews: [reviewSchema],
