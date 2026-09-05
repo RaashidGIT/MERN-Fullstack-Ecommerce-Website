@@ -123,4 +123,32 @@ router.patch('/:id/restock', protect, async (req, res) => {
   }
 });
 
+// PUT /api/products/:id
+router.put('/:id', protect, async (req, res) => {
+  try {
+    const { name, price, description, category, image } = req.body;
+    const product = await Product.findById(req.params.id);
+
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+
+    // Verify ownership
+    if (product.user.toString() !== req.user._id.toString() && !req.user.isAdmin) {
+      return res.status(403).json({ message: 'Not authorized to edit this listing' });
+    }
+
+    product.name = name ?? product.name;
+    product.price = price ?? product.price;
+    product.description = description ?? product.description;
+    product.category = category ?? product.category;
+    product.image = image ?? product.image;
+
+    const updatedProduct = await product.save();
+    res.json(updatedProduct);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 export default router;

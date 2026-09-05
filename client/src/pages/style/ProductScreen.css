@@ -29,12 +29,18 @@
 .product-page-image {
   flex: 1;
   min-width: 300px;
+  height: 450px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .product-page-image img {
-  width: 80%;
-  border-radius: 10px;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
+  border-radius: 10px;
 }
 
 .product-page-info {
@@ -73,6 +79,49 @@
   line-height: 1.6;
   color: #666;
   margin-bottom: 2rem;
+  white-space: pre-line; /* Preserves newlines entered in the textarea */
+  word-wrap: break-word;  /* Prevents single unbroken words from overflowing */
+}
+
+.description-container {
+  position: relative;
+  margin-bottom: 1.5rem;
+}
+
+.page-description {
+  line-height: 1.6;
+  color: #666;
+  margin: 0;
+
+  white-space: pre-line;
+  word-wrap: break-word;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.description-container.expanded .page-description {
+  display: block;
+  overflow: visible;
+}
+
+.description-toggle {
+  background: none;
+  border: none;
+  padding: 5px 0;
+  margin-top: 8px;
+
+  color: #ff4757;
+  font-size: 0.9rem;
+  font-weight: bold;
+
+  cursor: pointer;
+}
+
+.description-toggle:hover {
+  text-decoration: underline;
 }
 
 .stock-status {

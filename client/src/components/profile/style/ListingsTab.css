@@ -156,3 +156,155 @@
   background: #ff4757;
   color: #ffffff;
 }
+
+/* Actions under each product card */
+.listing-action-row {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+
+.edit-listing-btn {
+  flex: 1;
+  padding: 8px;
+  background: #232733;
+  color: #f1f2f6;
+  border: 1px solid #3e4451;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.85rem;
+  transition: all 0.2s ease;
+}
+
+.edit-listing-btn:hover {
+  background: #3e4451;
+  color: #ffffff;
+}
+
+.delete-listing-btn {
+  flex: 1;
+  padding: 8px;
+  background: #2f1d24;
+  color: #ff4757;
+  border: 1px solid #572b38;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.85rem;
+  transition: all 0.2s ease;
+}
+
+.delete-listing-btn:hover {
+  background: #ff4757;
+  color: #ffffff;
+}
+
+/* Modal Overlay */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+}
+
+.modal-content {
+  background: #1a1d26;
+  border: 1px solid #2f3542;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 480px;
+  padding: 24px;
+  color: #ffffff;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #2f3542;
+  padding-bottom: 12px;
+  margin-bottom: 16px;
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.close-modal-btn {
+  background: transparent;
+  border: none;
+  color: #747d8c;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.close-modal-btn:hover {
+  color: #ff4757;
+}
+
+/* Edit Form */
+.edit-product-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.edit-product-form label {
+  font-size: 0.8rem;
+  color: #a4b0be;
+  font-weight: 600;
+}
+
+.edit-product-form input,
+.edit-product-form textarea {
+  background: #12141a;
+  border: 1px solid #2f3542;
+  color: #ffffff;
+  padding: 9px 12px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  outline: none;
+}
+
+.edit-product-form input:focus,
+.edit-product-form textarea:focus {
+  border-color: #ff4757;
+}
+
+.modal-btn-row {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.cancel-btn {
+  padding: 8px 16px;
+  background: #2f3542;
+  color: #f1f2f6;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.save-btn {
+  padding: 8px 18px;
+  background: #ff4757;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.save-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

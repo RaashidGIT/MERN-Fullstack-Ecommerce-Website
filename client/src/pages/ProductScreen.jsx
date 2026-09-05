@@ -1,6 +1,6 @@
 // Here contains the logic for the Product screen, which displays detailed information about a specific product, allows users to select quantity, and add the product to their shopping cart.
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import LoadingSpinner from '../components/LoadingSpinner';
@@ -16,6 +16,10 @@ const ProductScreen = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [qty, setQty] = useState(1);
+  const [descriptionExpanded, setDescriptionExpanded] = useState(false);
+  const [descriptionOverflowing, setDescriptionOverflowing] = useState(false);
+
+  const descriptionRef = useRef(null);
 
   const fetchProduct = useCallback(async () => {
     try {
@@ -52,6 +56,14 @@ const ProductScreen = () => {
     addToCart(product, qty);
   };
 
+  useEffect(() => {
+  if (!descriptionRef.current || !product?.description) return;
+
+  const element = descriptionRef.current;
+
+  setDescriptionOverflowing(element.scrollHeight > element.clientHeight);
+}, [product]);
+
   if (loading) return <LoadingSpinner message="Inspecting anime gear..." />;
   if (error) return <div className="error-msg">{error} <Link to="/">Go Back</Link></div>;
 
@@ -68,7 +80,21 @@ const ProductScreen = () => {
           <span className="page-category">{product.category}</span>
           <h1>{product.name}</h1>
           <p className="page-price">${product.price.toFixed(2)}</p>
-          <p className="page-description">{product.description}</p>
+          <div className={`description-container ${descriptionExpanded ? 'expanded' : ''}`}>
+            <p ref={descriptionRef} className="page-description">
+              {product.description}
+            </p>
+
+            {descriptionOverflowing && (
+              <button
+                type="button"
+                className="description-toggle"
+                onClick={() => setDescriptionExpanded(!descriptionExpanded)}
+              >
+                {descriptionExpanded ? 'Show Less' : 'Read More'}
+              </button>
+            )}
+          </div>
 
           <div className="stock-status">
             Status:{' '}
