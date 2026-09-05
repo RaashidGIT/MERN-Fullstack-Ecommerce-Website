@@ -1,0 +1,255 @@
+/* Reviews Section - Full Width Below Main Card */
+.reviews-section {
+  width: 100%;
+  max-width: 1300px;
+  margin: 40px auto 20px auto;
+  padding: 30px;
+  background: #1a1d26;
+  border-radius: 12px;
+  border: 1px solid #2f3542;
+  box-sizing: border-box;
+}
+
+.reviews-main-title {
+  font-size: 1.6rem;
+  color: #ffffff;
+  margin-bottom: 24px;
+  border-bottom: 1px solid #2f3542;
+  padding-bottom: 12px;
+}
+
+/* Top Row: Side-by-side Score & Form */
+.reviews-top-row {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 24px;
+  margin-bottom: 35px;
+}
+
+@media (max-width: 820px) {
+  .reviews-top-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Vertical Rating Aggregate Box */
+.vertical-rating-card {
+  background: #14161d;
+  border: 1px solid #282c37;
+  border-radius: 10px;
+  padding: 24px 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.aggregate-big-number {
+  font-size: 3.5rem;
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1;
+}
+
+.aggregate-stars {
+  color: #ff9f43;
+  font-size: 1.4rem;
+  margin: 8px 0 4px 0;
+  letter-spacing: 2px;
+}
+
+.aggregate-subtext {
+  font-size: 0.85rem;
+  color: #747d8c;
+  margin-bottom: 18px;
+}
+
+/* Star Breakdown Bars */
+.rating-breakdown {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.breakdown-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: #a4b0be;
+}
+
+.breakdown-label {
+  min-width: 22px;
+  text-align: right;
+}
+
+.breakdown-track {
+  flex: 1;
+  height: 6px;
+  background: #2f3542;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.breakdown-fill {
+  height: 100%;
+  background: #ff4757;
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.breakdown-count {
+  min-width: 18px;
+  text-align: left;
+}
+
+/* Write Review Form */
+.review-form-container {
+  background: #14161d;
+  border: 1px solid #282c37;
+  border-radius: 10px;
+  padding: 24px;
+}
+
+.review-form-container h3 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  font-size: 1.25rem;
+  color: #ffffff;
+}
+
+.review-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.review-form label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #747d8c;
+  letter-spacing: 0.5px;
+}
+
+.review-form select,
+.review-form textarea {
+  background: #0f1117;
+  border: 1px solid #2f3542;
+  color: #f1f2f6;
+  padding: 10px 14px;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  outline: none;
+}
+
+.review-form select:focus,
+.review-form textarea:focus {
+  border-color: #ff4757;
+}
+
+.submit-review-btn {
+  height: 42px;
+  background: #ff4757;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  margin-top: 6px;
+  transition: background 0.2s ease;
+}
+
+.submit-review-btn:hover:not(:disabled) {
+  background: #e03b4a;
+}
+
+.submit-review-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Customer Reviews Feed */
+.reviews-list-container {
+  border-top: 1px solid #282c37;
+  padding-top: 0px;
+  text-align: center; /* Cancels any inherited center-alignment */
+}
+
+.reviews-list-container h3 {
+  font-size: 1.2rem;
+  color: #ffffff;
+  margin-bottom: 16px;
+  text-align: center; /* Center the "Customer Reviews" heading */
+}
+
+.reviews-feed {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.review-item-card {
+  background: #14161d;
+  border: 1px solid #282c37;
+  border-radius: 8px;
+  padding: 16px 20px;
+  text-align: left;
+}
+
+.review-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* User avatar, name, and date grouped together on the left */
+.review-user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #ffffff;
+}
+
+.review-user-avatar {
+  width: 28px;
+  height: 28px;
+  background: #2f3542;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 0.85rem;
+  color: #ff4757;
+  flex-shrink: 0;
+}
+
+.review-user-name {
+  font-size: 0.95rem;
+  color: #ffffff;
+}
+
+/* Date sitting right beside name */
+.review-date {
+  font-size: 0.8rem;
+  color: #747d8c;
+  margin: 0 0 0 13px;
+}
+
+.review-stars-display {
+  color: #ff9f43;
+  font-size: 1.1rem;
+}
+
+/* Left-justified comment */
+.review-comment-text {
+  margin: 12px 0 0 0;
+  color: #ced6e0;
+  line-height: 1.5;
+  font-size: 0.95rem;
+  text-align: left;
+}

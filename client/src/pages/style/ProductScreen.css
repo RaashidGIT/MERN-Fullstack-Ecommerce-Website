@@ -1,3 +1,7 @@
+/* ==========================================================================
+   PRODUCT CORE DETAILS & CONTAINER
+   ========================================================================== */
+
 .product-page {
   padding: 2rem;
   max-width: 1200px;
@@ -19,7 +23,7 @@
   background: white;
   padding: 2rem;
   border-radius: 15px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 .product-page-image {
@@ -36,8 +40,10 @@
 .product-page-info {
   flex: 1;
   min-width: 300px;
-  max-width: 600px; /* added to prevent overflow */
+  max-width: 600px;
   text-align: left;
+  display: flex;           /* Enables flexbox alignment */
+  flex-direction: column;  /* Keeps the content stacked vertically */
 }
 
 .product-page-info h1 {
@@ -45,7 +51,6 @@
   line-height: 1.2;
   margin: 0.5rem 0 1rem;
   color: #2f3542;
-
   word-wrap: break-word;
   overflow-wrap: break-word;
 }
@@ -71,16 +76,18 @@
 }
 
 .stock-status {
-  margin-bottom: 1.5rem;
-  padding: 10px;
+  margin-top: auto;        /* Pushes stock status and everything below it to the bottom */
+  margin-bottom: 1rem;
+  padding: 0px;
   background: #f9f9f9;
   border-radius: 5px;
-  color: #333434;
+  color: #000000;
 }
 
 .in-stock { color: #2ed573; font-weight: bold; }
 .out-of-stock { color: #ff4757; font-weight: bold; }
 
+/* Add To Cart Controls */
 .add-to-cart-btn {
   width: 100%;
   padding: 15px;
@@ -102,26 +109,12 @@
   cursor: not-allowed;
 }
 
-.error-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 60vh;
-}
-
-.error-msg {
-  color: #ff4757;
-  font-size: 1.5rem;
-  margin-bottom: 20px;
-  font-weight: bold;
-}
-
+/* Quantity Picker */
 .qty-picker-container {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  margin: 1.5rem 0;
+  gap: 0.5rem;
+  margin: 0.5rem 0;
 }
 
 .qty-label {
@@ -167,7 +160,7 @@
   color: #2f3542;
 }
 
-/* Seller badge styling */
+/* Seller Badge */
 .product-meta-header {
   display: flex;
   align-items: center;
@@ -184,4 +177,20 @@
   color: #ff4757;
   font-weight: 600;
   margin-left: 4px;
+}
+
+/* Feedback/Errors */
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+}
+
+.error-msg {
+  color: #ff4757;
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  font-weight: bold;
 }

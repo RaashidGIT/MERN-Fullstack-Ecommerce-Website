@@ -2,6 +2,20 @@
 
 import mongoose from 'mongoose';
 
+const reviewSchema = new mongoose.Schema(
+  {
+    name: { type: String, required: true },
+    rating: { type: Number, required: true, min: 1, max: 5 },
+    comment: { type: String, required: true },
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: 'User',
+    },
+  },
+  { timestamps: true }
+);
+
 const productSchema = new mongoose.Schema(
   {
     // Seller link: stores the creator's user ObjectId
@@ -29,7 +43,9 @@ const productSchema = new mongoose.Schema(
     },
     image: { type: String, required: true },
     countInStock: { type: Number, required: true, default: 0 },
-    rating: { type: Number, default: 0 },
+    rating: { type: Number, required: true, default: 0 },
+    reviews: [reviewSchema],
+    numReviews: { type: Number, required: true, default: 0 },
   },
   {
     timestamps: true,

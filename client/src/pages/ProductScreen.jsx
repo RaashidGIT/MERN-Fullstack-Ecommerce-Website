@@ -1,9 +1,10 @@
 // Here contains the logic for the Product screen, which displays detailed information about a specific product, allows users to select quantity, and add the product to their shopping cart.
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import LoadingSpinner from '../components/LoadingSpinner';
+import ProductReviews from '../pages/ProductReviews';
 import './style/ProductScreen.css';
 import '../App.css';
 
@@ -16,24 +17,25 @@ const ProductScreen = () => {
   const [error, setError] = useState(null);
   const [qty, setQty] = useState(1);
 
-  useEffect(() => {
-    const fetchProduct = async () => {
-      try {
-        const res = await fetch(`http://localhost:5000/api/products/${id}`);
-        const data = await res.json();
-        if (res.ok) {
-          setProduct(data);
-        } else {
-          setError(data.message);
-        }
-        setLoading(false);
-      } catch (err) {
-        setError('Failed to fetch product');
-        setLoading(false);
+  const fetchProduct = useCallback(async () => {
+    try {
+      const res = await fetch(`http://localhost:5000/api/products/${id}`);
+      const data = await res.json();
+      if (res.ok) {
+        setProduct(data);
+      } else {
+        setError(data.message);
       }
-    };
-    fetchProduct();
+    } catch (err) {
+      setError('Failed to fetch product');
+    } finally {
+      setLoading(false);
+    }
   }, [id]);
+
+  useEffect(() => {
+    fetchProduct();
+  }, [fetchProduct]);
 
   const handleDecrease = () => {
     if (qty > 1) setQty(qty - 1);
@@ -119,6 +121,9 @@ const ProductScreen = () => {
           </button>
         </div>
       </div>
+
+      {/* Standalone Modular Reviews Section */}
+      <ProductReviews product={product} onReviewAdded={fetchProduct} />
     </div>
   );
 };

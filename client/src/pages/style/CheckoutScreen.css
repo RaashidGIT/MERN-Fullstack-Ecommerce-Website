@@ -40,23 +40,26 @@
   background: #f8f9fa;
   border-radius: 8px;
   text-align: left; /* Keeps radio options left-aligned */
+  box-shadow: 0 0px 10px rgba(255, 61, 61, 0.995);
 }
 
 .payment-method h3 {
   margin-top: 0;
+  color: #2f3542;
   margin-bottom: 0.75rem;
   text-align: left;
 }
 
 .payment-method label {
   display: flex;
+  color: #2f3542;
   align-items: center;
   gap: 8px;
   cursor: pointer;
 }
 
 .place-order-btn {
-  background: #ff4757;
+  background: #ff5a68;
   color: white;
   padding: 15px;
   border: none;
@@ -68,6 +71,10 @@
   width: 100%;
 }
 
+.place-order-btn:hover {
+  background: #fb2f40;
+}
+
 /* --- Order Summary Sidebar Fixes --- */
 
 .order-summary-sidebar {
@@ -75,7 +82,7 @@
   background: white;
   padding: 2rem;
   border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  box-shadow: 0 0px 10px rgba(255, 61, 61, 0.995);
   height: fit-content;
   text-align: left; /* Prevents center-align inheritance */
 }

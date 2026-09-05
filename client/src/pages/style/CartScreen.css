@@ -22,7 +22,7 @@
   padding: 1rem 1.25rem;
   margin-bottom: 1rem;
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  box-shadow: 0 2px 8px rgb(243, 59, 59);
 }
 
 /* 2. Uses contain & prevents flex shrink so images keep their full shape */
@@ -40,6 +40,7 @@
 
 .item-details {
   flex-grow: 1;
+  color: #505153;
   text-align: left;
 }
 
@@ -64,10 +65,11 @@
   flex: 1;
   background: #ffffff;
   padding: 1.5rem;
+  color: #727375;
   border-radius: 12px;
   border: 1px solid #eee;
   min-width: 260px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  box-shadow: 0 2px 8px rgb(243, 59, 59);
 }
 
 .checkout-btn {
@@ -84,7 +86,7 @@
 }
 
 .checkout-btn:hover {
-  background: #1e2229;
+  background: #f73434e6;
 }
 
 .cart-header {
@@ -115,6 +117,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.qty-controls button:hover {
+  background: #000000;
+  color: white;
 }
 
 .qty-num {

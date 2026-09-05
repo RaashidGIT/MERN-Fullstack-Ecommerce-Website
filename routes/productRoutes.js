@@ -4,8 +4,11 @@ import express from 'express';
 import mongoose from 'mongoose';
 import Product from '../models/Product.js';
 import { protect } from '../middleware/authMiddleware.js';
+import { createProductReview } from '../controllers/productController.js';
 
 const router = express.Router();
+
+router.post('/:id/reviews', protect, createProductReview);
 
 // GET /api/products
 router.get('/', async (req, res) => {
