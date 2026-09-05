@@ -1,6 +1,8 @@
+// Here contains the logic for the actual listings tab in the profile page, including fetching user's listings, sorting them, restocking items, and handling editing and deletion of listings.
 import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ProductCard from '../productCard';
+import EditProductModal from './EditProductModal';
 import './style/ListingsTab.css';
 
 const ListingsTab = ({ userInfo, onListingsCountChange }) => {
@@ -9,21 +11,9 @@ const ListingsTab = ({ userInfo, onListingsCountChange }) => {
   const [sortBy, setSortBy] = useState('default');
   const [restockInputs, setRestockInputs] = useState({});
   const [updatingMap, setUpdatingMap] = useState({});
+  const [editingProduct, setEditingProduct] = useState(null);
   const navigate = useNavigate();
 
-  // Edit Modal State
-  const [editingProduct, setEditingProduct] = useState(null);
-  const [editForm, setEditForm] = useState({
-    name: '',
-    price: '',
-    category: '',
-    image: '',
-    extraImages: '',
-    description: '',
-  });
-  const [editSaving, setEditSaving] = useState(false);
-
-  // 1. Fetch Listings
   const fetchListings = async () => {
     if (!userInfo?.token) return;
     setLoadingListings(true);
@@ -47,7 +37,6 @@ const ListingsTab = ({ userInfo, onListingsCountChange }) => {
     fetchListings();
   }, [userInfo]);
 
-  // 2. Sort Listings
   const sortedListings = useMemo(() => {
     if (!Array.isArray(myListings)) return [];
     const items = [...myListings];
@@ -60,7 +49,6 @@ const ListingsTab = ({ userInfo, onListingsCountChange }) => {
     }
   }, [myListings, sortBy]);
 
-  // 3. Restock Handlers
   const getQty = (id) => restockInputs[id] || 1;
 
   const handleQtyChange = (id, delta) => {
@@ -96,31 +84,7 @@ const ListingsTab = ({ userInfo, onListingsCountChange }) => {
     }
   };
 
-  // 4. Open Edit Modal (pre-fills existing data & extra images)
-  const handleOpenEdit = (product) => {
-    setEditingProduct(product);
-    setEditForm({
-      name: product.name || '',
-      price: product.price || '',
-      category: product.category || '',
-      image: product.image || '',
-      extraImages: Array.isArray(product.images) ? product.images.join(', ') : '',
-      description: product.description || '',
-    });
-  };
-
-  // 5. Submit Edited Product
-  const handleUpdateProduct = async (e) => {
-    e.preventDefault();
-    setEditSaving(true);
-
-    const parsedImages = editForm.extraImages
-      .split(',')
-      .map((url) => url.trim())
-      .filter(Boolean);
-
-      console.log('Images to send:', parsedImages); // Look at your browser console
-
+  const handleSaveListing = async (updatedData) => {
     try {
       const res = await fetch(`http://localhost:5000/api/products/${editingProduct._id}`, {
         method: 'PUT',
@@ -128,18 +92,10 @@ const ListingsTab = ({ userInfo, onListingsCountChange }) => {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${userInfo.token}`,
         },
-        body: JSON.stringify({
-          name: editForm.name,
-          price: Number(editForm.price),
-          category: editForm.category,
-          image: editForm.image,
-          images: parsedImages,
-          description: editForm.description,
-        }),
+        body: JSON.stringify(updatedData),
       });
 
       const updated = await res.json();
-
       if (res.ok) {
         setMyListings((prev) =>
           prev.map((p) => (p._id === editingProduct._id ? updated : p))
@@ -150,12 +106,9 @@ const ListingsTab = ({ userInfo, onListingsCountChange }) => {
       }
     } catch (err) {
       alert('Error updating listing');
-    } finally {
-      setEditSaving(false);
     }
   };
 
-  // 6. Delete Handler
   const handleDeleteListing = async (productId) => {
     if (!window.confirm('Are you sure you want to remove this listing?')) return;
 
@@ -264,12 +217,11 @@ const ListingsTab = ({ userInfo, onListingsCountChange }) => {
                 </div>
               </ProductCard>
 
-              {/* Seller Action Controls */}
               <div className="listing-action-row">
                 <button
                   type="button"
                   className="edit-listing-btn"
-                  onClick={() => handleOpenEdit(item)}
+                  onClick={() => setEditingProduct(item)}
                 >
                   Edit
                 </button>
@@ -286,86 +238,12 @@ const ListingsTab = ({ userInfo, onListingsCountChange }) => {
         </div>
       )}
 
-      {/* Edit Listing Modal */}
       {editingProduct && (
-        <div className="modal-backdrop" onClick={() => setEditingProduct(null)}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h3>Edit Listing</h3>
-              <button
-                type="button"
-                className="close-modal-btn"
-                onClick={() => setEditingProduct(null)}
-              >
-                ✕
-              </button>
-            </div>
-
-            <form onSubmit={handleUpdateProduct} className="edit-product-form">
-              <label>Product Name</label>
-              <input
-                type="text"
-                value={editForm.name}
-                onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
-                required
-              />
-
-              <label>Price ($)</label>
-              <input
-                type="number"
-                step="0.01"
-                value={editForm.price}
-                onChange={(e) => setEditForm({ ...editForm, price: e.target.value })}
-                required
-              />
-
-              <label>Category</label>
-              <input
-                type="text"
-                value={editForm.category}
-                onChange={(e) => setEditForm({ ...editForm, category: e.target.value })}
-                required
-              />
-
-              <label>Main Cover Image URL</label>
-              <input
-                type="text"
-                value={editForm.image}
-                onChange={(e) => setEditForm({ ...editForm, image: e.target.value })}
-                required
-              />
-
-              <label>Additional Angles / Views (comma-separated URLs)</label>
-              <input
-                type="text"
-                value={editForm.extraImages}
-                placeholder="https://.../side.jpg, https://.../back.jpg"
-                onChange={(e) => setEditForm({ ...editForm, extraImages: e.target.value })}
-              />
-
-              <label>Description</label>
-              <textarea
-                rows="4"
-                value={editForm.description}
-                onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
-                required
-              />
-
-              <div className="modal-btn-row">
-                <button
-                  type="button"
-                  className="cancel-btn"
-                  onClick={() => setEditingProduct(null)}
-                >
-                  Cancel
-                </button>
-                <button type="submit" className="save-btn" disabled={editSaving}>
-                  {editSaving ? 'Saving...' : 'Save Changes'}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
+        <EditProductModal
+          product={editingProduct}
+          onClose={() => setEditingProduct(null)}
+          onSave={handleSaveListing}
+        />
       )}
     </section>
   );
