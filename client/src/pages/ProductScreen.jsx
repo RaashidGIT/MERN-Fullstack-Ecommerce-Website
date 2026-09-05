@@ -139,7 +139,7 @@ const ProductScreen = () => {
               </>
             )}
 
-            <div className="zoom-hint">Click to Zoom 🔍</div>
+            <div className="zoom-hint">Expand🔍</div>
           </div>
 
           {/* Small Image Thumbnails */}

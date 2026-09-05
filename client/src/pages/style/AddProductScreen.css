@@ -128,13 +128,52 @@
   border-color: #ff4757;
 }
 
-.file-input-wrapper input[type="file"] {
-  background: #2a313d;
-  color: #a4b0be;
-  padding: 10px;
+/* File Upload Bar - Exact height and theme match with text inputs */
+.file-input-wrapper {
+  width: 100%;
+  height: 46px; /* Matches text input height */
+  display: flex;
+  align-items: stretch;
+  background: #2a313d; /* Matches input background */
+  border: 1px solid #3e4451; /* Matches input border */
   border-radius: 8px;
-  border: 1px dashed #57606f;
+  overflow: hidden;
+}
+
+.file-input-wrapper input[type="file"] {
+  display: none !important;
+}
+
+.file-choose-label {
+  background: #1e222d;
+  color: #f1f2f6;
+  border-right: 1px solid #3e4451;
+  padding: 0 16px;
+  font-size: 0.9rem;
+  font-weight: 600;
   cursor: pointer;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: background 0.2s ease;
+}
+
+.file-choose-label:hover {
+  background: #ff4757;
+  color: #ffffff;
+}
+
+.file-chosen-name {
+  display: flex;
+  align-items: center;
+  padding: 0 14px;
+  font-size: 0.95rem;
+  color: #a4b0be;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .uploading-text {
@@ -210,4 +249,52 @@
   .form-row-three {
     flex-direction: column;
   }
+}
+
+/* Gallery Previews Container */
+.gallery-previews-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.preview-chip {
+  position: relative;
+  width: 72px;
+  height: 72px;
+  border-radius: 8px;
+  border: 1px solid #3e4451;
+  background: #12141a;
+  overflow: hidden;
+}
+
+.preview-chip img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.remove-chip-btn {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 18px;
+  height: 18px;
+  background: rgba(0, 0, 0, 0.75);
+  color: #ff4757;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: bold;
+  transition: all 0.2s ease;
+}
+
+.remove-chip-btn:hover {
+  background: #ff4757;
+  color: #ffffff;
 }

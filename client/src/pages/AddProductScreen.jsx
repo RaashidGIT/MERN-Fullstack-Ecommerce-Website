@@ -7,11 +7,19 @@ const AddProductScreen = () => {
   const { userInfo } = useUser();
   const navigate = useNavigate();
 
-  const [imageMode, setImageMode] = useState('picker'); // 'picker' | 'url'
-  const [uploading, setUploading] = useState(false);
+  // Mode toggles: 'picker' | 'url'
+  const [coverMode, setCoverMode] = useState('picker');
+  const [galleryMode, setGalleryMode] = useState('picker');
 
-  // Additional gallery images input
-  const [extraImagesInput, setExtraImagesInput] = useState('');
+  // Loading states
+  const [uploadingCover, setUploadingCover] = useState(false);
+  const [uploadingExtras, setUploadingExtras] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  // Gallery URLs (array internally for previews/sync)
+  const [galleryImages, setGalleryImages] = useState([]);
+  const [galleryUrlInput, setGalleryUrlInput] = useState('');
 
   const [formData, setFormData] = useState({
     name: '',
@@ -21,9 +29,6 @@ const AddProductScreen = () => {
     countInStock: 1,
     description: '',
   });
-
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
 
   useEffect(() => {
     if (!userInfo) {
@@ -36,33 +41,87 @@ const AddProductScreen = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleFileUpload = async (e) => {
+  // 1. Single Cover Upload
+  const handleCoverUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
-    const uploadPayload = new FormData();
-    uploadPayload.append('image', file);
-    setUploading(true);
+    const payload = new FormData();
+    payload.append('image', file);
+    setUploadingCover(true);
 
     try {
       const res = await fetch('http://localhost:5000/api/upload', {
         method: 'POST',
-        body: uploadPayload,
+        body: payload,
       });
 
       if (res.ok) {
         const filePath = await res.text();
-        const fullPath = `http://localhost:5000${filePath}`;
-        setFormData((prev) => ({ ...prev, image: fullPath }));
+        setFormData((prev) => ({ ...prev, image: `http://localhost:5000${filePath}` }));
       } else {
-        alert('Image upload failed. Ensure the file is a supported image format.');
+        alert('Cover upload failed. Ensure the file is an image format.');
       }
     } catch (err) {
-      console.error('File upload error:', err);
-      alert('Error uploading file to server.');
+      alert('Error uploading cover to server.');
     } finally {
-      setUploading(false);
+      setUploadingCover(false);
     }
+  };
+
+  // 2. Multi-Image Gallery Upload
+  const handleGalleryFilesUpload = async (e) => {
+    const files = Array.from(e.target.files);
+    if (files.length === 0) return;
+
+    setUploadingExtras(true);
+    const newUrls = [];
+
+    try {
+      for (const file of files) {
+        const payload = new FormData();
+        payload.append('image', file);
+
+        const res = await fetch('http://localhost:5000/api/upload', {
+          method: 'POST',
+          body: payload,
+        });
+
+        if (res.ok) {
+          const filePath = await res.text();
+          newUrls.push(`http://localhost:5000${filePath}`);
+        }
+      }
+
+      setGalleryImages((prev) => {
+        const updated = [...prev, ...newUrls];
+        setGalleryUrlInput(updated.join(', '));
+        return updated;
+      });
+    } catch (err) {
+      alert('Error uploading additional images.');
+    } finally {
+      setUploadingExtras(false);
+    }
+  };
+
+  // Sync manual comma-separated text input to gallery array
+  const handleGalleryUrlChange = (e) => {
+    const val = e.target.value;
+    setGalleryUrlInput(val);
+    const parsed = val
+      .split(',')
+      .map((u) => u.trim())
+      .filter(Boolean);
+    setGalleryImages(parsed);
+  };
+
+  const removeGalleryImage = (indexToRemove) => {
+    setGalleryImages((prev) => {
+      const updated = prev.filter((_, idx) => idx !== indexToRemove);
+      setGalleryUrlInput(updated.join(', '));
+      return updated;
+    });
   };
 
   const handleSubmit = async (e) => {
@@ -76,15 +135,11 @@ const AddProductScreen = () => {
       return;
     }
 
-    // Build submission payload with extra images array
     const payload = {
       ...formData,
       price: Number(formData.price),
       countInStock: Number(formData.countInStock),
-      images: extraImagesInput
-        .split(',')
-        .map((url) => url.trim())
-        .filter(Boolean),
+      images: galleryImages,
     };
 
     try {
@@ -102,7 +157,7 @@ const AddProductScreen = () => {
       try {
         responseData = JSON.parse(responseText);
       } catch {
-        responseData = { message: `Server error (${res.status}): Please check backend route.` };
+        responseData = { message: `Server error (${res.status})` };
       }
 
       if (res.ok) {
@@ -112,8 +167,7 @@ const AddProductScreen = () => {
         setError(responseData.message || 'Failed to list product.');
       }
     } catch (err) {
-      console.error('Listing submit error:', err);
-      setError('Server connection error. Please verify the backend is running.');
+      setError('Server connection error. Please verify backend is running.');
     } finally {
       setLoading(false);
     }
@@ -190,35 +244,44 @@ const AddProductScreen = () => {
             </div>
           </div>
 
-          {/* Primary Cover Image */}
+          {/* 1. Primary Cover Image Section */}
           <div className="form-group image-selection-group">
             <label>Primary Cover Image</label>
             <div className="image-mode-toggle">
               <button
                 type="button"
-                className={`toggle-tab-btn ${imageMode === 'picker' ? 'active' : ''}`}
-                onClick={() => setImageMode('picker')}
+                className={`toggle-tab-btn ${coverMode === 'picker' ? 'active' : ''}`}
+                onClick={() => setCoverMode('picker')}
               >
                 📁 Upload File
               </button>
               <button
                 type="button"
-                className={`toggle-tab-btn ${imageMode === 'url' ? 'active' : ''}`}
-                onClick={() => setImageMode('url')}
+                className={`toggle-tab-btn ${coverMode === 'url' ? 'active' : ''}`}
+                onClick={() => setCoverMode('url')}
               >
                 🔗 Image URL
               </button>
             </div>
 
-            {imageMode === 'picker' ? (
+            {coverMode === 'picker' ? (
               <div className="file-input-wrapper">
+                <label htmlFor="coverFile" className="file-choose-label">
+                  📁 Choose File
+                </label>
                 <input
                   type="file"
-                  id="imageFile"
+                  id="coverFile"
                   accept="image/png, image/jpeg, image/webp"
-                  onChange={handleFileUpload}
+                  onChange={handleCoverUpload}
                 />
-                {uploading && <p className="uploading-text">Uploading image...</p>}
+                <span className="file-chosen-name">
+                  {uploadingCover
+                    ? 'Uploading image...'
+                    : formData.image
+                    ? formData.image.split('/').pop()
+                    : 'No file chosen'}
+                </span>
               </div>
             ) : (
               <input
@@ -238,16 +301,74 @@ const AddProductScreen = () => {
             )}
           </div>
 
-          {/* Additional Gallery Angles */}
-          <div className="form-group">
-            <label htmlFor="extraImages">Additional Gallery Images (Optional)</label>
-            <input
-              id="extraImages"
-              type="text"
-              placeholder="Comma-separated image URLs (e.g. https://.../angle1.jpg, https://.../box.jpg)"
-              value={extraImagesInput}
-              onChange={(e) => setExtraImagesInput(e.target.value)}
-            />
+          {/* 2. Additional Gallery Images Section */}
+          <div className="form-group image-selection-group">
+            <label>Additional Gallery Angles (Optional)</label>
+            <div className="image-mode-toggle">
+              <button
+                type="button"
+                className={`toggle-tab-btn ${galleryMode === 'picker' ? 'active' : ''}`}
+                onClick={() => setGalleryMode('picker')}
+              >
+                📁 Upload Files (Multi)
+              </button>
+              <button
+                type="button"
+                className={`toggle-tab-btn ${galleryMode === 'url' ? 'active' : ''}`}
+                onClick={() => setGalleryMode('url')}
+              >
+                🔗 Image URLs
+              </button>
+            </div>
+
+            {galleryMode === 'picker' ? (
+              <div className="file-input-wrapper">
+                <label htmlFor="galleryFiles" className="file-choose-label">
+                  📁 Choose Files
+                </label>
+                <input
+                  type="file"
+                  id="galleryFiles"
+                  accept="image/png, image/jpeg, image/webp"
+                  multiple
+                  onChange={handleGalleryFilesUpload}
+                />
+                <span className="file-chosen-name">
+                  {uploadingExtras
+                    ? 'Uploading images...'
+                    : galleryImages.length > 0
+                    ? `${galleryImages.length} image(s) selected`
+                    : 'No files chosen'}
+                </span>
+              </div>
+            ) : (
+              <input
+                id="extraImages"
+                type="text"
+                placeholder="Comma-separated image URLs (e.g. https://.../1.jpg, https://.../2.jpg)"
+                value={galleryUrlInput}
+                onChange={handleGalleryUrlChange}
+              />
+            )}
+
+            {/* Gallery Thumbnails List */}
+            {galleryImages.length > 0 && (
+              <div className="gallery-previews-container">
+                {galleryImages.map((url, idx) => (
+                  <div key={idx} className="preview-chip">
+                    <img src={url} alt={`Angle ${idx + 1}`} />
+                    <button
+                      type="button"
+                      className="remove-chip-btn"
+                      onClick={() => removeGalleryImage(idx)}
+                      title="Remove image"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="form-group">
@@ -270,7 +391,11 @@ const AddProductScreen = () => {
             >
               Cancel
             </button>
-            <button type="submit" className="btn-submit-listing" disabled={loading || uploading}>
+            <button
+              type="submit"
+              className="btn-submit-listing"
+              disabled={loading || uploadingCover || uploadingExtras}
+            >
               {loading ? 'Publishing...' : 'Publish Listing'}
             </button>
           </div>
