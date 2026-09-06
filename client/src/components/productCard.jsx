@@ -34,7 +34,16 @@ const ProductCard = ({
       <div className="product-info">
         <span className="category">{product.category}</span>
         <Link to={`/product/${product._id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-          <h3 className={`product-name ${isLongTitle ? 'long-title' : ''}`}>{product.name}</h3>
+          <h3 className={`product-name ${isLongTitle ? 'long-title' : ''}`}>
+            {isLongTitle ? (
+              <span className="marquee-track">
+                <span className="marquee-text">{product.name}</span>
+                <span className="marquee-text" aria-hidden="true">{product.name}</span>
+              </span>
+            ) : (
+              product.name
+            )}
+          </h3>
         </Link>
 
         {/* Aggregate Rating Section */}

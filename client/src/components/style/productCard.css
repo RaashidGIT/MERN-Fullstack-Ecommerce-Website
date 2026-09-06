@@ -42,13 +42,20 @@
   display: block;
 }
 
+.price {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #4a4a4b;
+  margin-top: auto; /* Pushes price to the bottom of the card */
+}
+
 /* Title: Strict single line with ellipsis */
 .product-info h3,
 .product-name {
   margin: 6px 0;
   font-size: 1.1rem;
   line-height: 1.3;
-  height: 1.3em;        /* fixed height so hover state can't grow it */
+  height: 1.3em;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -56,12 +63,24 @@
   min-height: auto;
 }
 
-/* Marquee only on hover, and only for titles long enough to need it */
+/* When hovered + long, switch to marquee mode */
 .product-card:hover .product-name.long-title {
   text-overflow: clip;
+}
+
+.marquee-track {
+  display: inline-flex;
+  width: max-content;
+}
+
+.product-card:hover .long-title .marquee-track {
+  animation: scroll-title 10s linear infinite;
+}
+
+.marquee-text {
   display: inline-block;
-  vertical-align: top;   /* prevents baseline gap from adding height */
-  animation: scroll-title 5s linear infinite alternate;
+  padding-right: 40px; /* gap before the repeated copy starts */
+  white-space: nowrap;
 }
 
 @keyframes scroll-title {
@@ -69,7 +88,7 @@
     transform: translateX(0%);
   }
   100% {
-    transform: translateX(-35%);
+    transform: translateX(-50%);
   }
 }
 
