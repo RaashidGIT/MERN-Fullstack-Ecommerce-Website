@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useWishlist } from '../context/useWishlist';
+import StarRating from './StarRating';
 import './style/ProductCard.css';
 
 const ProductCard = ({ 
@@ -14,6 +15,7 @@ const ProductCard = ({
 
   const isFavorited = typeof isInWishlist === 'function' ? isInWishlist(product._id) : false;
   const isOutOfStock = (product.countInStock ?? 0) <= 0;
+  const isLongTitle = product.name.length > 28;
 
   const handleAddToCart = () => {
     if (!isOutOfStock) {
@@ -32,8 +34,16 @@ const ProductCard = ({
       <div className="product-info">
         <span className="category">{product.category}</span>
         <Link to={`/product/${product._id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-          <h3>{product.name}</h3>
+          <h3 className={`product-name ${isLongTitle ? 'long-title' : ''}`}>{product.name}</h3>
         </Link>
+
+        {/* Aggregate Rating Section */}
+        <StarRating 
+          rating={product.rating || 0} 
+          numReviews={product.numReviews || 0} 
+          idPrefix={product._id} 
+        />
+
         <p className="price">${product.price.toFixed(2)}</p>
 
         {/* Regular Buyer Controls */}

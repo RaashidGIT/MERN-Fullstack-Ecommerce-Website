@@ -1,0 +1,41 @@
+.star-rating-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin: 6px 0;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+/* Numeric score (e.g. 3.8/5) */
+.rating-score {
+  font-weight: 700;
+  font-size: 1rem; 
+  color: #2f3542;
+}
+
+/* Star grouping with parentheses */
+.rating-stars {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 1rem;
+  color: #747d8c;
+}
+
+/* Star SVG icons */
+.star-icon {
+  width: 18px; 
+  height: 18px; 
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+/* Total review count badge (e.g. (14)) */
+.review-count {
+  font-size: 0.9rem;
+  color: #747d8c;
+  font-weight: 600;
+  margin-left: 2px;
+}
