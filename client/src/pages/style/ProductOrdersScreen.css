@@ -115,7 +115,7 @@
   border: 1px solid rgba(46, 213, 115, 0.3);
 }
 
-.order-status-pill.delivery-completed {
+.order-status-pill.delivered{
   background: rgba(46, 213, 115, 0.15);
   color: #2ed573;
   border: 1px solid rgba(46, 213, 115, 0.3);
