@@ -56,11 +56,29 @@
   overflow-wrap: break-word;
 }
 
+.category{
+  color: #ff4757;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
 .page-category {
   color: #ff4757;
   text-transform: uppercase;
   font-size: 0.9rem;
   font-weight: bold;
+}
+
+.rating-score {
+  color: #ff4757;
+  font-size: 0.85rem;
+  margin-left: 6px;
+}
+
+.review-count {
+  color: #ff4757;
+  font-size: 0.85rem;
+  margin-left: 6px;
 }
 
 .page-price {
