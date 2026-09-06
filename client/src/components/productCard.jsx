@@ -17,6 +17,11 @@ const ProductCard = ({
   const isOutOfStock = (product.countInStock ?? 0) <= 0;
   const isLongTitle = product.name.length > 28;
 
+  // Branch link target: Sellers go to orders list, buyers go to public store page
+  const targetLink = isSellerView 
+    ? `/seller/product/${product._id}/orders` 
+    : `/product/${product._id}`;
+
   const handleAddToCart = () => {
     if (!isOutOfStock) {
       addToCart({ ...product, qty: 1 });
@@ -25,7 +30,8 @@ const ProductCard = ({
 
   return (
     <div className="product-card">
-      <Link to={`/product/${product._id}`}>
+      {/* 1. Use targetLink on the image */}
+      <Link to={targetLink}>
         <div className="product-image">
           <img src={product.image} alt={product.name} />
         </div>
@@ -33,7 +39,9 @@ const ProductCard = ({
 
       <div className="product-info">
         <span className="category">{product.category}</span>
-        <Link to={`/product/${product._id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+
+        {/* 2. Use targetLink on the title */}
+        <Link to={targetLink} style={{ textDecoration: 'none', color: 'inherit' }}>
           <h3 className={`product-name ${isLongTitle ? 'long-title' : ''}`}>
             {isLongTitle ? (
               <span className="marquee-track">

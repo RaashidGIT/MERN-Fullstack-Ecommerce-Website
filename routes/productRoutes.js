@@ -5,10 +5,12 @@ import mongoose from 'mongoose';
 import Product from '../models/Product.js';
 import { protect } from '../middleware/authMiddleware.js';
 import { createProductReview } from '../controllers/productController.js';
+import { getProductOrders } from '../controllers/productController.js';
 
 const router = express.Router();
 
 router.post('/:id/reviews', protect, createProductReview);
+router.get('/:id/orders', protect, getProductOrders);
 
 // GET /api/products
 router.get('/', async (req, res) => {

@@ -43,3 +43,44 @@ export const createProductReview = async (req, res) => {
     res.status(500).json({ message: error.message || 'Failed to submit review' });
   }
 };
+
+// GET /api/products/:id/orders
+// Access: Private (Seller only)
+export const getProductOrders = async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.id);
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+
+    // Verify the requester owns this listing
+    if (product.user.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ message: 'Not authorized as seller of this product' });
+    }
+
+    // Find all orders containing this specific product
+    const orders = await Order.find({ 'orderItems.product': req.params.id })
+      .populate('user', 'name email')
+      .sort({ createdAt: -1 });
+
+    // Extract specific item quantities if orders contain multiple products
+    const formattedOrders = orders.map((order) => {
+      const item = order.orderItems.find(
+        (i) => i.product.toString() === req.params.id
+      );
+      return {
+        _id: order._id,
+        user: order.user,
+        qty: item ? item.qty : 1,
+        createdAt: order.createdAt,
+        isPaid: order.isPaid,
+        isCancelled: Boolean(order.isCancelled),
+        isDelivered: Boolean(order.isDelivered),
+      };
+    });
+
+    res.json({ product, orders: formattedOrders });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

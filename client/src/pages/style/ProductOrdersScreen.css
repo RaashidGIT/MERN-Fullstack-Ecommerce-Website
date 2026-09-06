@@ -1,0 +1,122 @@
+.product-orders-container {
+  max-width: 900px;
+  margin: 30px auto;
+  padding: 0 20px;
+}
+
+.orders-header-row {
+  margin-bottom: 20px;
+}
+
+.btn-back-to-listings {
+  background: #232733;
+  color: #f1f2f6;
+  border: 1px solid #3e4451;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-back-to-listings:hover {
+  background: #ff4757;
+  border-color: #ff4757;
+  color: #ffffff;
+}
+
+.orders-content-card {
+  background: #1e222d;
+  border: 1px solid #2f3542;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  color: #ffffff;
+}
+
+.orders-product-summary {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #2f3542;
+  margin-bottom: 20px;
+}
+
+.summary-thumb {
+  width: 70px;
+  height: 70px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 1px solid #3e4451;
+}
+
+.summary-subtext {
+  color: #a4b0be;
+  font-size: 0.9rem;
+  margin-top: 4px;
+  text-justify: left;
+}
+
+.orders-table-wrapper {
+  overflow-x: auto;
+}
+
+.orders-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.orders-table th {
+  background: #12141a;
+  color: #a4b0be;
+  font-size: 0.82rem;
+  padding: 10px 14px;
+  border-bottom: 1px solid #2f3542;
+}
+
+.orders-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid #2a313d;
+  font-size: 0.9rem;
+}
+
+.order-status-pill {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: capitalize;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+
+/* Cancelled */
+.order-status-pill.cancelled {
+  background: rgba(255, 71, 87, 0.15);
+  color: #ff4757;
+  border: 1px solid rgba(255, 71, 87, 0.3);
+}
+
+/* Pending (Inside 10-min window) */
+.order-status-pill.pending {
+  background: rgba(255, 159, 67, 0.15);
+  color: #ff9531;
+  border: 1px solid rgba(255, 159, 67, 0.3);
+}
+
+/* Delivery Pending (Confirmed after 10-min grace period) */
+.order-status-pill.delivery-pending {
+  background: rgba(46, 213, 115, 0.15);
+  color: #eaff00;
+  border: 1px solid rgba(46, 213, 115, 0.3);
+}
+
+.order-status-pill.delivery-completed {
+  background: rgba(46, 213, 115, 0.15);
+  color: #2ed573;
+  border: 1px solid rgba(46, 213, 115, 0.3);
+}
