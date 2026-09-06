@@ -73,7 +73,7 @@ export const getProductOrders = async (req, res) => {
         user: order.user,
         qty: item ? item.qty : 1,
         createdAt: order.createdAt,
-        isPaid: order.isPaid,
+        isPaid: Boolean(order.isPaid),
         isCancelled: Boolean(order.isCancelled),
         isDelivered: Boolean(order.isDelivered),
       };
@@ -84,3 +84,4 @@ export const getProductOrders = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+

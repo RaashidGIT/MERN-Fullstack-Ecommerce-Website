@@ -17,9 +17,12 @@ const ProductOrdersScreen = () => {
   const GRACE_PERIOD_MS = 10 * 60 * 1000; // 10 minutes
 
   const getOrderStatus = (ord) => {
-  // 1. Explicitly cancelled by buyer before grace period ends
+  
   const isCancelled = ord.isCancelled === true || ord.isCancelled === 'true';
+  const isDelivered = Boolean(ord.isDelivered);
+  const isPaid = Boolean(ord.isPaid);
 
+  // 1. Explicitly cancelled by buyer before grace period ends
   if (isCancelled) {
     return { label: 'Cancelled', className: 'cancelled' };
   }
@@ -34,12 +37,17 @@ const ProductOrdersScreen = () => {
   }
 
   // 3. Grace period passed -> Confirmed purchase -> Delivery pending
-  return { label: 'Delivery Pending', className: 'delivery-pending' };
+  if (isPaid && !isDelivered) {
+    return { label: 'Delivery Pending', className: 'delivery-pending' };
+  }
 
   // 4. Grace period passed -> Confirmed purchase -> Delivered
-  // if (ord.isDelivered) {
-  //   return { label: 'Delivered', className: 'delivered' };
-  // }
+  if (isPaid && isDelivered) {
+    return { label: 'Delivered', className: 'delivered' };
+  }
+
+  // 5. Fallback if grace period has passed but payment is not complete
+  return { label: 'Payment Pending', className: 'pending' };
 };
 
   useEffect(() => {
