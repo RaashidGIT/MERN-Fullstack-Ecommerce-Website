@@ -91,7 +91,7 @@ const CheckoutScreen = () => {
             />
             <input 
                 type="text" 
-                placeholder="City" 
+                placeholder="Address Line 1" 
                 required 
                 onChange={(e) => setAddress({...address, city: e.target.value})}
             />

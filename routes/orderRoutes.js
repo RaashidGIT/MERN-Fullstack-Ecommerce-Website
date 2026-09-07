@@ -3,10 +3,13 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import Order from '../models/Order.js';
+import { getSellerAllOrders } from '../controllers/productController.js';
 import { addOrderItems, cancelOrder } from '../controllers/orderController.js';
 import { protect } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
+
+router.get('/seller/all-orders', protect, getSellerAllOrders);
 
 // POST /api/orders - Creates order, decrements stock & cleans wishlist
 router.post('/', protect, addOrderItems);

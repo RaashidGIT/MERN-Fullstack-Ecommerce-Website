@@ -1,5 +1,5 @@
 .product-orders-container {
-  max-width: 900px;
+  max-width: 1300px; /* Expanded from 900px */
   margin: 30px auto;
   padding: 0 20px;
 }
@@ -61,6 +61,7 @@
 
 .orders-table-wrapper {
   overflow-x: auto;
+  width: 100%;
 }
 
 .orders-table {
@@ -81,6 +82,12 @@
   padding: 12px 14px;
   border-bottom: 1px solid #2a313d;
   font-size: 0.9rem;
+}
+
+.orders-table th,
+.orders-table td {
+  white-space: nowrap; /* Keeps rows neat and prevents awkward line breaks */
+  padding: 12px 10px;
 }
 
 .order-status-pill {

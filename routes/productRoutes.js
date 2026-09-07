@@ -4,8 +4,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import Product from '../models/Product.js';
 import { protect } from '../middleware/authMiddleware.js';
-import { createProductReview } from '../controllers/productController.js';
-import { getProductOrders } from '../controllers/productController.js';
+import { getProductOrders, createProductReview } from '../controllers/productController.js';
 
 const router = express.Router();
 

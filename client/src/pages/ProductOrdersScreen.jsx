@@ -1,4 +1,3 @@
-// src/pages/ProductOrdersScreen.jsx
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
@@ -14,41 +13,24 @@ const ProductOrdersScreen = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  const GRACE_PERIOD_MS = 10 * 60 * 1000; // 10 minutes
+  const GRACE_PERIOD_MS = 10 * 60 * 1000;
 
   const getOrderStatus = (ord) => {
-  
-  const isCancelled = ord.isCancelled === true || ord.isCancelled === 'true';
-  const isDelivered = Boolean(ord.isDelivered);
-  const isPaid = Boolean(ord.isPaid);
+    const isCancelled = ord.isCancelled === true || ord.isCancelled === 'true';
+    const isDelivered = Boolean(ord.isDelivered);
+    const isPaid = Boolean(ord.isPaid);
 
-  // 1. Explicitly cancelled by buyer before grace period ends
-  if (isCancelled) {
-    return { label: 'Cancelled', className: 'cancelled' };
-  }
+    if (isCancelled) return { label: 'Cancelled', className: 'cancelled' };
 
-  // 2. Check time elapsed since order creation
-  const orderTime = new Date(ord.createdAt).getTime();
-  const timeElapsed = Date.now() - orderTime;
+    const orderTime = new Date(ord.createdAt).getTime();
+    const timeElapsed = Date.now() - orderTime;
 
-  // Still within 10-minute grace period
-  if (timeElapsed < GRACE_PERIOD_MS) {
-    return { label: 'Pending', className: 'pending' };
-  }
+    if (timeElapsed < GRACE_PERIOD_MS) return { label: 'Pending', className: 'pending' };
+    if (isPaid && isDelivered) return { label: 'Delivered', className: 'delivered' };
+    if (isPaid && !isDelivered) return { label: 'Delivery Pending', className: 'delivery-pending' };
 
-  // 3. Grace period passed -> Confirmed purchase -> Delivery pending
-  if (isPaid && !isDelivered) {
-    return { label: 'Delivery Pending', className: 'delivery-pending' };
-  }
-
-  // 4. Grace period passed -> Confirmed purchase -> Delivered
-  if (isPaid && isDelivered) {
-    return { label: 'Delivered', className: 'delivered' };
-  }
-
-  // 5. Fallback if grace period has passed but payment is not complete
-  return { label: 'Payment Pending', className: 'pending' };
-};
+    return { label: 'Payment Pending', className: 'pending' };
+  };
 
   useEffect(() => {
     if (!userInfo) {
@@ -81,7 +63,6 @@ const ProductOrdersScreen = () => {
     fetchProductOrders();
   }, [productId, userInfo, navigate]);
 
-  // Direct return to Profile -> Listings Tab
   const handleGoBack = () => {
     navigate('/profile', { state: { defaultTab: 'listings' } });
   };
@@ -124,33 +105,46 @@ const ProductOrdersScreen = () => {
                 <thead>
                   <tr>
                     <th>Order ID</th>
-                    <th>Buyer Name</th>
+                    <th>Buyer</th>
                     <th>Email</th>
+                    <th>Address Line 1</th>
+                    <th>Postal Code</th>
+                    <th>Country</th>
                     <th>Qty</th>
-                    <th>Date</th>
+                    <th>Date & Time</th>
                     <th>Status</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {orders.map((ord) => (
-                    <tr key={ord._id}>
-                      <td>#{ord._id.slice(-6)}</td>
-                      <td>{ord.user?.name || 'Anonymous'}</td>
-                      <td>{ord.user?.email || 'N/A'}</td>
-                      <td>{ord.qty}</td>
-                      <td>{new Date(ord.createdAt).toLocaleDateString()}</td>
-                      <td>
-                        {(() => {
-                          const status = getOrderStatus(ord);
-                          return (
-                            <span className={`order-status-pill ${status.className}`}>
-                              {status.label}
+                  {orders.map((ord) => {
+                    const status = getOrderStatus(ord);
+                    const orderDate = new Date(ord.createdAt);
+
+                    return (
+                      <tr key={ord._id}>
+                        <td>#{ord._id.slice(-6)}</td>
+                        <td>{ord.buyerName}</td>
+                        <td>{ord.buyerEmail}</td>
+                        <td>{ord.city}</td>
+                        <td>{ord.postalCode}</td>
+                        <td>{ord.country}</td>
+                        <td>{ord.qty}</td>
+                        <td>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', fontSize: '0.8rem' }}>
+                            <span>{orderDate.toLocaleDateString()}</span>
+                            <span style={{ color: '#888' }}>
+                              {orderDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                             </span>
-                          );
-                        })()}
-                      </td>
-                    </tr>
-                  ))}
+                          </div>
+                        </td>
+                        <td>
+                          <span className={`order-status-pill ${status.className}`}>
+                            {status.label}
+                          </span>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>

@@ -245,6 +245,16 @@ const ListingsTab = ({ userInfo, onListingsCountChange }) => {
           onSave={handleSaveListing}
         />
       )}
+
+      <button
+        type="button"
+        className="floating-all-orders-btn"
+        onClick={() => navigate('/seller/orders/all')}
+        title="View complete sales history across all products"
+      >
+        📋 View All Orders
+      </button>
+
     </section>
   );
 };
