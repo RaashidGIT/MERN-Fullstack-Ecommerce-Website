@@ -1,9 +1,9 @@
 // Here contains the logic for setting up the Express.js server, including middleware configuration, route definitions, database connection, and server startup. It also loads environment variables and serves static files from the uploads directory.
 
+import dotenv from 'dotenv';
 import path from 'path';
 import express from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import productRoutes from './routes/productRoutes.js';
 import userRoutes from './routes/userRoutes.js';

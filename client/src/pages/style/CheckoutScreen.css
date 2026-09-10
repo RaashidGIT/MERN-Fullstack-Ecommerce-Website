@@ -45,14 +45,14 @@
 
 .payment-method h3 {
   margin-top: 0;
-  color: #2f3542;
+  color: #422f2f;
   margin-bottom: 0.75rem;
   text-align: left;
 }
 
 .payment-method label {
   display: flex;
-  color: #2f3542;
+  color: #422f2f;
   align-items: center;
   gap: 8px;
   cursor: pointer;
