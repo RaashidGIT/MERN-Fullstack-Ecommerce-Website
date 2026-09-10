@@ -1,6 +1,4 @@
 // src/components/ShippingLabelModal.jsx
-// src/components/ShippingLabelModal.jsx
-import React from 'react';
 import './style/ShippingLabelModal.css';
 
 const ShippingLabelModal = ({ order, onClose }) => {
