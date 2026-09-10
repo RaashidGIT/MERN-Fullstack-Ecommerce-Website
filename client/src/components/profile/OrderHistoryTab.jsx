@@ -1,21 +1,16 @@
-// Here contains the logic for the order history tab in the profile page, including fetching user's orders, displaying them, and handling order cancellations within a 10-minute window.
-
 import { useState, useEffect } from 'react';
 import './style/OrderHistoryTab.css';
 
-// Manages order history retrieval, dynamic timers, and cancellations
 const OrderHistoryTab = ({ userInfo, onOrderCountChange }) => {
   const [orders, setOrders] = useState([]);
   const [loadingOrders, setLoadingOrders] = useState(false);
   const [currentTime, setCurrentTime] = useState(Date.now());
 
-  // 1-second interval to update remaining cancellation windows
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(Date.now()), 1000);
     return () => clearInterval(timer);
   }, []);
 
-  // Fetch orders for current user
   const fetchMyOrders = async () => {
     if (!userInfo?.token) return;
     setLoadingOrders(true);
@@ -38,7 +33,6 @@ const OrderHistoryTab = ({ userInfo, onOrderCountChange }) => {
     fetchMyOrders();
   }, [userInfo]);
 
-  // Handle cancellation within 10-minute window
   const handleCancelOrder = async (orderId) => {
     if (!window.confirm('Are you sure you want to cancel this order?')) return;
 
@@ -66,6 +60,31 @@ const OrderHistoryTab = ({ userInfo, onOrderCountChange }) => {
     }
   };
 
+  const getBuyerOrderStatus = (order) => {
+    if (order.isCancelled) {
+      return { label: 'Cancelled', className: 'status-cancelled' };
+    }
+    if (order.isDelivered) {
+      return { label: 'Delivered', className: 'status-delivered' };
+    }
+
+    const orderDate = new Date(order.createdAt).getTime();
+    const diffMinutes = (currentTime - orderDate) / (1000 * 60);
+    if (diffMinutes < 10) {
+      return { label: 'Order Confirmed', className: 'status-placed' };
+    }
+
+    if (order.paymentMethod === 'COD') {
+      return { label: 'Delivery Pending (COD)', className: 'status-shipping' };
+    }
+
+    if (order.isPaid) {
+      return { label: 'Delivery Pending', className: 'status-shipping' };
+    }
+
+    return { label: 'Payment Pending', className: 'status-pending' };
+  };
+
   return (
     <section className="profile-section">
       <h3 className="settings-header-title">Order History</h3>
@@ -83,6 +102,7 @@ const OrderHistoryTab = ({ userInfo, onOrderCountChange }) => {
             const diffMinutes = (currentTime - orderDate) / (1000 * 60);
             const isExpired = diffMinutes >= 10;
             const minutesLeft = Math.max(0, Math.ceil(10 - diffMinutes));
+            const status = getBuyerOrderStatus(order);
 
             return (
               <div key={order._id} className="order-history-card">
@@ -92,11 +112,9 @@ const OrderHistoryTab = ({ userInfo, onOrderCountChange }) => {
                     <span className="order-date">{new Date(order.createdAt).toLocaleString()}</span>
                   </div>
                   <div className="order-status-badge">
-                    {order.isCancelled ? (
-                      <span className="status-cancelled">Cancelled</span>
-                    ) : (
-                      <span className="status-placed">Order Confirmed</span>
-                    )}
+                    <span className={`status-pill ${status.className}`}>
+                      {status.label}
+                    </span>
                   </div>
                 </div>
 
@@ -118,7 +136,9 @@ const OrderHistoryTab = ({ userInfo, onOrderCountChange }) => {
                   <span className="order-total">Total: ${order.totalPrice.toFixed(2)}</span>
                   <div className="cancel-action-wrapper">
                     {order.isCancelled ? (
-                      <span className="status-cancelled">Cancelled</span>
+                      <span className="status-cancelled-text">Order Cancelled</span>
+                    ) : order.isDelivered ? (
+                      <span className="status-delivered-text">Delivered on {new Date(order.deliveredAt || Date.now()).toLocaleDateString()}</span>
                     ) : isExpired ? (
                       <button type="button" className="cancel-order-btn-disabled" disabled>
                         Order cannot be cancelled anymore

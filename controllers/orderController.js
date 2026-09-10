@@ -130,7 +130,7 @@ export const addOrderItems = async (req, res) => {
       })),
       user: req.user._id,
       shippingAddress,
-      paymentMethod: paymentMethod || 'Cash on Delivery',
+      paymentMethod: order.paymentMethod || 'COD',
       totalPrice,
     });
 
@@ -222,5 +222,33 @@ export const cancelOrder = async (req, res) => {
   } catch (error) {
     console.error('Cancel order error:', error);
     res.status(500).json({ message: error.message || 'Failed to cancel order' });
+  }
+};
+
+// PUT /api/orders/:id/deliver
+// Access: Private (Seller / Admin)
+export const updateOrderToDelivered = async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.id);
+
+    if (!order) {
+      return res.status(404).json({ message: 'Order not found' });
+    }
+
+    // Set delivery state
+    order.isDelivered = true;
+    order.deliveredAt = Date.now();
+
+    // If COD, delivery confirms cash collection -> mark as paid
+    if (order.paymentMethod === 'COD') {
+      order.isPaid = true;
+      order.paidAt = Date.now();
+    }
+
+    const updatedOrder = await order.save();
+    res.status(200).json(updatedOrder);
+  } catch (error) {
+    console.error('Delivery update error:', error);
+    res.status(500).json({ message: error.message || 'Failed to update delivery status' });
   }
 };

@@ -28,6 +28,7 @@ const orderSchema = mongoose.Schema(
       postalCode: { type: String, required: true },
       country: { type: String, required: true },
     },
+    paymentMethod: { type: String, required: true, default: 'COD' },
     totalPrice: { type: Number, required: true, default: 0.0 },
     isCancelled: {
       type: Boolean,

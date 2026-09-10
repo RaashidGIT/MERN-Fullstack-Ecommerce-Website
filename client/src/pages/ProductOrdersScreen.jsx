@@ -12,6 +12,7 @@ const ProductOrdersScreen = () => {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [updatingId, setUpdatingId] = useState(null);
 
   const GRACE_PERIOD_MS = 10 * 60 * 1000;
 
@@ -19,17 +20,36 @@ const ProductOrdersScreen = () => {
     const isCancelled = ord.isCancelled === true || ord.isCancelled === 'true';
     const isDelivered = Boolean(ord.isDelivered);
     const isPaid = Boolean(ord.isPaid);
+    const isCOD = ord.paymentMethod === 'COD';
 
-    if (isCancelled) return { label: 'Cancelled', className: 'cancelled' };
+    if (isCancelled) return { label: 'Cancelled', className: 'cancelled', canDeliver: false };
 
     const orderTime = new Date(ord.createdAt).getTime();
-    const timeElapsed = Date.now() - orderTime;
+    if (Date.now() - orderTime < GRACE_PERIOD_MS) {
+      return { label: 'Pending', className: 'pending', canDeliver: false };
+    }
 
-    if (timeElapsed < GRACE_PERIOD_MS) return { label: 'Pending', className: 'pending' };
-    if (isPaid && isDelivered) return { label: 'Delivered', className: 'delivered' };
-    if (isPaid && !isDelivered) return { label: 'Delivery Pending', className: 'delivery-pending' };
+    if (isDelivered) return { label: 'Delivered', className: 'delivered', canDeliver: false };
+    if (isCOD) return { label: 'COD - Delivery Pending', className: 'cod-pending', canDeliver: true };
+    if (isPaid && !isDelivered) return { label: 'Delivery Pending', className: 'delivery-pending', canDeliver: true };
 
-    return { label: 'Payment Pending', className: 'pending' };
+    return { label: 'Payment Pending', className: 'pending', canDeliver: false };
+  };
+
+  const fetchProductOrders = async () => {
+    try {
+      const res = await fetch(`http://localhost:5000/api/products/${productId}/orders`, {
+        headers: { Authorization: `Bearer ${userInfo.token}` },
+      });
+      if (!res.ok) throw new Error('Failed to load buyers list');
+      const data = await res.json();
+      setProduct(data.product);
+      setOrders(data.orders || []);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -37,40 +57,43 @@ const ProductOrdersScreen = () => {
       navigate('/login');
       return;
     }
-
-    const fetchProductOrders = async () => {
-      try {
-        const res = await fetch(`http://localhost:5000/api/products/${productId}/orders`, {
-          headers: {
-            Authorization: `Bearer ${userInfo.token}`,
-          },
-        });
-
-        if (!res.ok) {
-          throw new Error('Failed to load buyers list');
-        }
-
-        const data = await res.json();
-        setProduct(data.product);
-        setOrders(data.orders || []);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchProductOrders();
   }, [productId, userInfo, navigate]);
 
-  const handleGoBack = () => {
-    navigate('/profile', { state: { defaultTab: 'listings' } });
+  const handleMarkDelivered = async (orderId) => {
+    if (!window.confirm('Confirm that this order has reached the customer?')) return;
+    setUpdatingId(orderId);
+
+    try {
+      const res = await fetch(`http://localhost:5000/api/orders/${orderId}/deliver`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      });
+
+      if (!res.ok) throw new Error('Could not update status');
+
+      // Locally update state to reflect delivery immediately
+      setOrders((prev) =>
+        prev.map((ord) => (ord._id === orderId ? { ...ord, isDelivered: true, isPaid: true } : ord))
+      );
+    } catch (err) {
+      alert(err.message);
+    } finally {
+      setUpdatingId(null);
+    }
   };
 
   return (
     <div className="product-orders-container">
       <div className="orders-header-row">
-        <button type="button" className="btn-back-to-listings" onClick={handleGoBack}>
+        <button
+          type="button"
+          className="btn-back-to-listings"
+          onClick={() => navigate('/profile', { state: { defaultTab: 'listings' } })}
+        >
           ← Back to My Listings
         </button>
       </div>
@@ -113,6 +136,7 @@ const ProductOrdersScreen = () => {
                     <th>Qty</th>
                     <th>Date & Time</th>
                     <th>Status</th>
+                    <th>Action</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -141,6 +165,20 @@ const ProductOrdersScreen = () => {
                           <span className={`order-status-pill ${status.className}`}>
                             {status.label}
                           </span>
+                        </td>
+                        <td>
+                          {status.canDeliver ? (
+                            <button
+                              type="button"
+                              className="btn-mark-delivered"
+                              disabled={updatingId === ord._id}
+                              onClick={() => handleMarkDelivered(ord._id)}
+                            >
+                              {updatingId === ord._id ? 'Updating...' : 'Mark Delivered'}
+                            </button>
+                          ) : (
+                            <span style={{ color: '#666', fontSize: '0.8rem' }}>—</span>
+                          )}
                         </td>
                       </tr>
                     );

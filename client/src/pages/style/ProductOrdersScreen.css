@@ -127,3 +127,35 @@
   color: #2ed573;
   border: 1px solid rgba(46, 213, 115, 0.3);
 }
+
+/* Status pill for Cash On Delivery Pending */
+.order-status-pill.cod-pending {
+  background: rgba(234, 179, 8, 0.15);
+  color: #eab308;
+  border: 1px solid rgba(234, 179, 8, 0.35);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* Action Button */
+.btn-mark-delivered {
+  background: transparent;
+  color: #2ed573;
+  border: 1px solid #2ed573;
+  padding: 5px 10px;
+  font-size: 0.75rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.btn-mark-delivered:hover:not(:disabled) {
+  background: #2ed573;
+  color: #1a1a2e;
+}
+
+.btn-mark-delivered:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

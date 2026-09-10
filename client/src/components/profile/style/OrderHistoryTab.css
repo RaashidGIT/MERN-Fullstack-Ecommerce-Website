@@ -127,3 +127,29 @@
   font-size: 0.8rem;
   font-weight: 600;
 }
+
+.status-pill {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.status-pill.status-delivered {
+  background: rgba(46, 213, 115, 0.15);
+  color: #2ed573;
+  border: 1px solid rgba(46, 213, 115, 0.4);
+}
+
+.status-pill.status-shipping {
+  background: rgba(52, 152, 219, 0.15);
+  color: #3498db;
+  border: 1px solid rgba(52, 152, 219, 0.4);
+}
+
+.status-delivered-text {
+  color: #2ed573;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
