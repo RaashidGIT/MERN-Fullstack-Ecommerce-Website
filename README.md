@@ -1,4 +1,3 @@
-````markdown
 # Anime Loot ⚡
 
 ### Modern MERN E-Commerce Platform
