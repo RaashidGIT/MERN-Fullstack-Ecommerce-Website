@@ -98,7 +98,7 @@ A production-ready MERN stack e-commerce application engineered for the Indian r
                                     │
                                     ▼
                          ┌───────────────────────┐
-                         │    ORDER CREATED     │
+                         │    ORDER CREATED      │
                          └───────────┬───────────┘
                                      │
                                      ▼
