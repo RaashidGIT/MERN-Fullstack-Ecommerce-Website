@@ -92,7 +92,7 @@ function App() {
         {/* Center: Title + Expanding Overlay Search */}
         <div className="header-center">
           <Link to="/" className={`logo-link ${isSearchOpen ? 'logo-hidden' : ''}`}>
-            <h1 className="logo">Anime Merch Store</h1>
+            <h1 className="logo">Anime Loot⚡</h1>
           </Link>
 
           <div className={`nav-search-overlay ${isSearchOpen ? 'expanded' : ''}`}>
