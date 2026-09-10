@@ -118,6 +118,11 @@
   font-weight: 600;
 }
 
+.item-qty {
+  color: #ff4757;
+  font-weight: 600;
+}
+
 .summary-total {
   display: flex;
   justify-content: center; /* Centers horizontally */

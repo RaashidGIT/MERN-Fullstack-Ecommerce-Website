@@ -242,18 +242,18 @@ const CheckoutScreen = () => {
       <div className="order-summary-sidebar">
         <h3>Order Summary</h3>
         {cartItems.map((item) => (
-          <div key={item._id} className="summary-item">
+            <div key={item._id} className="summary-item">
             <span>
-              {item.qty}x {item.name}
+                <span className="item-qty">{item.qty}x</span> {item.name}
             </span>
             <span>${(item.qty * item.price).toFixed(2)}</span>
-          </div>
+            </div>
         ))}
         <hr />
         <div className="summary-total">
-          <strong>Total: ${totalCalculated.toFixed(2)}</strong>
+            <strong>Total: ${totalCalculated.toFixed(2)}</strong>
         </div>
-      </div>
+        </div>
     </div>
   );
 };
