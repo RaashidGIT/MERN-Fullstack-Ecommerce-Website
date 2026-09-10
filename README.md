@@ -290,8 +290,3 @@ anime-loot/
 Distributed under the **MIT License**.
 
 See `LICENSE` for more information.
-
-```
-
-One thing I deliberately changed is the **state-machine diagram wording**: I kept your actual flow but made the payment and fulfillment paths visually separate so the README doesn't imply that COD goes through Razorpay/HMAC verification.
-```
