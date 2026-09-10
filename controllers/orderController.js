@@ -230,25 +230,40 @@ export const cancelOrder = async (req, res) => {
 export const updateOrderToDelivered = async (req, res) => {
   try {
     const order = await Order.findById(req.params.id);
+    if (!order) return res.status(404).json({ message: 'Order not found' });
 
-    if (!order) {
-      return res.status(404).json({ message: 'Order not found' });
-    }
-
-    // Set delivery state
     order.isDelivered = true;
     order.deliveredAt = Date.now();
+    order.shippingStatus = 'DELIVERED';
 
-    // If COD, delivery confirms cash collection -> mark as paid
     if (order.paymentMethod === 'COD') {
       order.isPaid = true;
       order.paidAt = Date.now();
     }
 
-    const updatedOrder = await order.save();
-    res.status(200).json(updatedOrder);
-  } catch (error) {
-    console.error('Delivery update error:', error);
-    res.status(500).json({ message: error.message || 'Failed to update delivery status' });
+    const updated = await order.save();
+    res.status(200).json(updated);
+  } catch (err) {
+    res.status(500).json({ message: err.message || 'Delivery update failed' });
+  }
+};
+
+// PUT /api/orders/:id/dispatch
+export const dispatchOrder = async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.id);
+    if (!order) return res.status(404).json({ message: 'Order not found' });
+
+    // Generate realistic Indian AWB code
+    const randomSuffix = Math.floor(100000 + Math.random() * 900000);
+    order.awbCode = `AWB-IND-${randomSuffix}`;
+    order.isDispatched = true;
+    order.dispatchedAt = Date.now();
+    order.shippingStatus = 'IN_TRANSIT';
+
+    const updated = await order.save();
+    res.status(200).json(updated);
+  } catch (err) {
+    res.status(500).json({ message: err.message || 'Dispatch failed' });
   }
 };

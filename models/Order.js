@@ -36,6 +36,15 @@ const orderSchema = mongoose.Schema(
     },
     isPaid: { type: Boolean, required: true, default: false },
     isDelivered: { type: Boolean, required: true, default: false },
+    isDispatched: { type: Boolean, default: false },
+    dispatchedAt: { type: Date },
+    awbCode: { type: String, default: '' },
+    courierPartner: { type: String, default: 'Delhivery Express' },
+    shippingStatus: {
+      type: String,
+      enum: ['ORDER_PLACED', 'PACKED', 'IN_TRANSIT', 'OUT_FOR_DELIVERY', 'DELIVERED'],
+      default: 'ORDER_PLACED',
+    },
   },
   { timestamps: true } // Automatically creates 'createdAt' and 'updatedAt'
 );

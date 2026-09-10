@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
+import ShippingLabelModal from '../components/ShippingLabelModal';
 import './style/ProductOrdersScreen.css';
 
 const ProductOrdersScreen = () => {
@@ -13,27 +14,38 @@ const ProductOrdersScreen = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [updatingId, setUpdatingId] = useState(null);
+  const [activeLabelOrder, setActiveLabelOrder] = useState(null);
 
   const GRACE_PERIOD_MS = 10 * 60 * 1000;
 
   const getOrderStatus = (ord) => {
     const isCancelled = ord.isCancelled === true || ord.isCancelled === 'true';
     const isDelivered = Boolean(ord.isDelivered);
+    const isDispatched = Boolean(ord.isDispatched);
     const isPaid = Boolean(ord.isPaid);
     const isCOD = ord.paymentMethod === 'COD';
 
-    if (isCancelled) return { label: 'Cancelled', className: 'cancelled', canDeliver: false };
+    if (isCancelled) return { label: 'Cancelled', className: 'cancelled', stage: 'CANCELLED' };
+    if (isDelivered) return { label: 'Delivered', className: 'delivered', stage: 'DELIVERED' };
 
     const orderTime = new Date(ord.createdAt).getTime();
     if (Date.now() - orderTime < GRACE_PERIOD_MS) {
-      return { label: 'Pending', className: 'pending', canDeliver: false };
+      return { label: 'Pending', className: 'pending', stage: 'GRACE' };
     }
 
-    if (isDelivered) return { label: 'Delivered', className: 'delivered', canDeliver: false };
-    if (isCOD) return { label: 'COD - Delivery Pending', className: 'cod-pending', canDeliver: true };
-    if (isPaid && !isDelivered) return { label: 'Delivery Pending', className: 'delivery-pending', canDeliver: true };
+    if (isDispatched) {
+      return { label: 'In Transit', className: 'in-transit', stage: 'IN_TRANSIT' };
+    }
 
-    return { label: 'Payment Pending', className: 'pending', canDeliver: false };
+    if (isCOD) {
+      return { label: 'COD - Ready to Ship', className: 'cod-pending', stage: 'READY_TO_SHIP' };
+    }
+
+    if (isPaid) {
+      return { label: 'Ready to Ship', className: 'delivery-pending', stage: 'READY_TO_SHIP' };
+    }
+
+    return { label: 'Payment Pending', className: 'pending', stage: 'UNPAID' };
   };
 
   const fetchProductOrders = async () => {
@@ -60,6 +72,37 @@ const ProductOrdersScreen = () => {
     fetchProductOrders();
   }, [productId, userInfo, navigate]);
 
+  const handleDispatchOrder = async (ord) => {
+    setUpdatingId(ord._id);
+    try {
+      const res = await fetch(`http://localhost:5000/api/orders/${ord._id}/dispatch`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      });
+      const updated = await res.json();
+      if (!res.ok) throw new Error(updated.message || 'Dispatch failed');
+
+      setOrders((prev) =>
+        prev.map((o) =>
+          o._id === ord._id ? { ...o, isDispatched: true, awbCode: updated.awbCode } : o
+        )
+      );
+
+      setActiveLabelOrder({
+        ...ord,
+        productName: product?.name || 'Anime Merch',
+        awbCode: updated.awbCode,
+      });
+    } catch (err) {
+      alert(err.message);
+    } finally {
+      setUpdatingId(null);
+    }
+  };
+
   const handleMarkDelivered = async (orderId) => {
     if (!window.confirm('Confirm that this order has reached the customer?')) return;
     setUpdatingId(orderId);
@@ -72,10 +115,8 @@ const ProductOrdersScreen = () => {
           Authorization: `Bearer ${userInfo.token}`,
         },
       });
-
       if (!res.ok) throw new Error('Could not update status');
 
-      // Locally update state to reflect delivery immediately
       setOrders((prev) =>
         prev.map((ord) => (ord._id === orderId ? { ...ord, isDelivered: true, isPaid: true } : ord))
       );
@@ -108,8 +149,8 @@ const ProductOrdersScreen = () => {
             {product && (
               <>
                 <img src={product.image} alt={product.name} className="summary-thumb" />
-                <div>
-                  <h2>{product.name}</h2>
+                <div className="summary-info">
+                  <h2 className="summary-product-name">{product.name}</h2>
                   <p className="summary-subtext">
                     Total Purchases: <strong>{orders.length} order(s)</strong>
                   </p>
@@ -130,13 +171,13 @@ const ProductOrdersScreen = () => {
                     <th>Order ID</th>
                     <th>Buyer</th>
                     <th>Email</th>
-                    <th>Address Line 1</th>
+                    <th>Address</th>
                     <th>Postal Code</th>
                     <th>Country</th>
                     <th>Qty</th>
                     <th>Date & Time</th>
                     <th>Status</th>
-                    <th>Action</th>
+                    <th style={{ textAlign: 'center', minWidth: '160px' }}>Action</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -148,15 +189,15 @@ const ProductOrdersScreen = () => {
                       <tr key={ord._id}>
                         <td>#{ord._id.slice(-6)}</td>
                         <td>{ord.buyerName}</td>
-                        <td>{ord.buyerEmail}</td>
-                        <td>{ord.city}</td>
+                        <td className="cell-truncate">{ord.buyerEmail}</td>
+                        <td className="cell-truncate">{ord.city}</td>
                         <td>{ord.postalCode}</td>
                         <td>{ord.country}</td>
                         <td>{ord.qty}</td>
                         <td>
-                          <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', fontSize: '0.8rem' }}>
+                          <div className="date-time-cell">
                             <span>{orderDate.toLocaleDateString()}</span>
-                            <span style={{ color: '#888' }}>
+                            <span className="sub-time">
                               {orderDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                             </span>
                           </div>
@@ -166,18 +207,45 @@ const ProductOrdersScreen = () => {
                             {status.label}
                           </span>
                         </td>
-                        <td>
-                          {status.canDeliver ? (
+                        <td style={{ textAlign: 'center' }}>
+                          {status.stage === 'READY_TO_SHIP' && (
                             <button
                               type="button"
-                              className="btn-mark-delivered"
+                              className="btn-dispatch-ship"
                               disabled={updatingId === ord._id}
-                              onClick={() => handleMarkDelivered(ord._id)}
+                              onClick={() => handleDispatchOrder(ord)}
                             >
-                              {updatingId === ord._id ? 'Updating...' : 'Mark Delivered'}
+                              {updatingId === ord._id ? 'Generating...' : '📦 Ship Order'}
                             </button>
-                          ) : (
-                            <span style={{ color: '#666', fontSize: '0.8rem' }}>—</span>
+                          )}
+
+                          {status.stage === 'IN_TRANSIT' && (
+                            <div className="action-button-stack">
+                              <button
+                                type="button"
+                                className="btn-mark-delivered"
+                                disabled={updatingId === ord._id}
+                                onClick={() => handleMarkDelivered(ord._id)}
+                              >
+                                ✓ Confirm Delivery
+                              </button>
+                              <button
+                                type="button"
+                                className="btn-reprint-label"
+                                onClick={() =>
+                                  setActiveLabelOrder({
+                                    ...ord,
+                                    productName: product?.name || 'Anime Merch',
+                                  })
+                                }
+                              >
+                                📄 View Slip
+                              </button>
+                            </div>
+                          )}
+
+                          {['GRACE', 'DELIVERED', 'CANCELLED', 'UNPAID'].includes(status.stage) && (
+                            <span style={{ color: '#666', fontSize: '0.85rem' }}>—</span>
                           )}
                         </td>
                       </tr>
@@ -188,6 +256,13 @@ const ProductOrdersScreen = () => {
             </div>
           )}
         </div>
+      )}
+
+      {activeLabelOrder && (
+        <ShippingLabelModal
+          order={activeLabelOrder}
+          onClose={() => setActiveLabelOrder(null)}
+        />
       )}
     </div>
   );

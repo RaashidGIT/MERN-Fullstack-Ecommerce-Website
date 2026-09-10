@@ -4,7 +4,13 @@ import express from 'express';
 import mongoose from 'mongoose';
 import Order from '../models/Order.js';
 import { getSellerAllOrders } from '../controllers/productController.js';
-import { addOrderItems, cancelOrder, createRazorpayOrder, verifyRazorpayPayment, updateOrderToDelivered } from '../controllers/orderController.js';
+import { addOrderItems, 
+          cancelOrder, 
+          createRazorpayOrder, 
+          verifyRazorpayPayment, 
+          updateOrderToDelivered,
+          dispatchOrder 
+        } from '../controllers/orderController.js';
 import { protect } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
@@ -38,6 +44,7 @@ router.post('/razorpay/verify', protect, verifyRazorpayPayment);
 // PUT /api/orders/:id/cancel - Cancels order and restores stock
 router.put('/:id/cancel', protect, cancelOrder);
 
+router.put('/:id/dispatch', protect, dispatchOrder);
 router.put('/:id/deliver', protect, updateOrderToDelivered);
 
 export default router;

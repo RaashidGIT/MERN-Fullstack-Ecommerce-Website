@@ -1,5 +1,5 @@
 .product-orders-container {
-  max-width: 1300px; /* Expanded from 900px */
+  max-width: 1450px; 
   margin: 30px auto;
   padding: 0 20px;
 }
@@ -158,4 +158,103 @@
 .btn-mark-delivered:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+/* Table Cell Layout & Truncation */
+.cell-truncate-title {
+  max-width: 140px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cell-truncate {
+  max-width: 120px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.summary-product-name {
+  max-width: 500px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.date-time-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 0.8rem;
+}
+
+.sub-time {
+  color: #888;
+  font-size: 0.75rem;
+}
+
+/* Action Button Layout */
+.action-button-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: center;
+}
+
+.btn-dispatch-ship {
+  background: #3498db;
+  color: #fff;
+  border: none;
+  padding: 6px 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+
+.btn-dispatch-ship:hover:not(:disabled) {
+  background: #2980b9;
+}
+
+.btn-mark-delivered {
+  background: transparent;
+  color: #2ed573;
+  border: 1px solid #2ed573;
+  padding: 4px 10px;
+  font-size: 0.75rem;
+  border-radius: 4px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+
+.btn-mark-delivered:hover:not(:disabled) {
+  background: #2ed573;
+  color: #000;
+}
+
+.btn-reprint-label {
+  background: rgba(255, 255, 255, 0.08);
+  color: #ddd;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 3px 8px;
+  font-size: 0.7rem;
+  border-radius: 4px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.btn-reprint-label:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+}
+
+/* Status Pill Variations */
+.order-status-pill.in-transit {
+  background: rgba(52, 152, 219, 0.15);
+  color: #3498db;
+  border: 1px solid rgba(52, 152, 219, 0.4);
 }
