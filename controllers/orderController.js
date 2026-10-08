@@ -130,7 +130,7 @@ export const addOrderItems = async (req, res) => {
       })),
       user: req.user._id,
       shippingAddress,
-      paymentMethod: order.paymentMethod || 'COD',
+      paymentMethod: paymentMethod || 'COD',
       totalPrice,
     });
 
