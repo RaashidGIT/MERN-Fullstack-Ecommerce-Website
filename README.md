@@ -169,21 +169,15 @@ A production-ready MERN stack e-commerce application engineered for the Indian r
 | :---: | :---: |
 | <img width="1881" height="860" alt="Screenshot 2026-10-08 202008" src="https://github.com/user-attachments/assets/602698a1-d00f-4735-ad38-d405c6fdace0" /> | <img width="1891" height="857" alt="Screenshot 2026-10-08 202035" src="https://github.com/user-attachments/assets/b00190e7-4d61-4cef-9cc0-7d4f878ddc10" /> |
 | **Product Details 2** | **Login Page** |
-| <img width="1896" height="840" alt="Screenshot 2026-10-08 202047" src="https://github.com/user-attachments/assets/5026aadf-2227-4e7e-8efe-2036f99d380a" />
-| <img width="800" height="671" alt="Screenshot 2026-10-08 202119" src="https://github.com/user-attachments/assets/74dd639d-776d-4aa7-9fae-1f9d0b94a68d" /> |
+| <img width="1896" height="840" alt="Screenshot 2026-10-08 202047" src="https://github.com/user-attachments/assets/5026aadf-2227-4e7e-8efe-2036f99d380a" /> | <img width="800" height="671" alt="Screenshot 2026-10-08 202119" src="https://github.com/user-attachments/assets/74dd639d-776d-4aa7-9fae-1f9d0b94a68d" /> |
 | **Dashboard/Wishlist** | **Order History** |
 | <img width="1866" height="838" alt="Screenshot 2026-10-08 202231" src="https://github.com/user-attachments/assets/9e477233-51ab-4f87-b560-d0c6c4fd9999" /> | <img width="1205" height="732" alt="Screenshot 2026-10-08 210609" src="https://github.com/user-attachments/assets/d08df76f-872a-476a-9a77-ecbcc62772b6" /> |
 | **My Listings** | **My Listings 2** |
-| <img width="1855" height="747" alt="Screenshot 2026-10-08 202252" src="https://github.com/user-attachments/assets/f67d7f6f-0b31-4382-9f34-2ddf6929ef43" />
- | <img width="1852" height="747" alt="Screenshot 2026-10-08 202304" src="https://github.com/user-attachments/assets/b6470ec8-a260-42be-adf2-9777f20eb5b4" />
- |
+| <img width="1855" height="747" alt="Screenshot 2026-10-08 202252" src="https://github.com/user-attachments/assets/f67d7f6f-0b31-4382-9f34-2ddf6929ef43" /> | <img width="1852" height="747" alt="Screenshot 2026-10-08 202304" src="https://github.com/user-attachments/assets/b6470ec8-a260-42be-adf2-9777f20eb5b4" /> |
 | **About Account** | **Cart Screen** |
-| <img width="1815" height="722" alt="Screenshot 2026-10-08 202314" src="https://github.com/user-attachments/assets/f53d4b49-45b9-45ba-9bc6-65583c7fd675" />
- | <img width="1890" height="845" alt="Screenshot 2026-10-08 202347" src="https://github.com/user-attachments/assets/25f2739c-c6cc-42b2-b437-2840778d0906" />
- |
+| <img width="1815" height="722" alt="Screenshot 2026-10-08 202314" src="https://github.com/user-attachments/assets/f53d4b49-45b9-45ba-9bc6-65583c7fd675" /> | <img width="1890" height="845" alt="Screenshot 2026-10-08 202347" src="https://github.com/user-attachments/assets/25f2739c-c6cc-42b2-b437-2840778d0906" /> |
 | **Cart Screen 2** | **Vendor Listing** |
-| <img width="1610" height="761" alt="Screenshot 2026-10-08 202357" src="https://github.com/user-attachments/assets/ce8bfe99-3411-4c94-80ca-bba474a76234" /> | 
-<img width="940" height="706" alt="Screenshot 2026-10-08 202930" src="https://github.com/user-attachments/assets/8c377e70-41af-41e7-b6cb-303a645edd91" /> |
+| <img width="1610" height="761" alt="Screenshot 2026-10-08 202357" src="https://github.com/user-attachments/assets/ce8bfe99-3411-4c94-80ca-bba474a76234" /> | <img width="940" height="706" alt="Screenshot 2026-10-08 202930" src="https://github.com/user-attachments/assets/8c377e70-41af-41e7-b6cb-303a645edd91" /> |
 
 ---
 
