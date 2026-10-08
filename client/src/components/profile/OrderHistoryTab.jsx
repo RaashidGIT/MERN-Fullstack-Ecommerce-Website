@@ -21,10 +21,11 @@ const OrderHistoryTab = ({ userInfo, onOrderCountChange }) => {
         headers: { Authorization: `Bearer ${userInfo.token}` },
       });
       const data = await res.json();
-      setOrders(Array.isArray(data) ? data : []);
-      if (onOrderCountChange) onOrderCountChange(data.length);
+      const orderList = Array.isArray(data) ? data : [];
+      setOrders(orderList);
+      if (onOrderCountChange) onOrderCountChange(orderList.length);
     } catch (error) {
-      console.error(error);
+      console.error('Failed to load orders:', error);
     } finally {
       setLoadingOrders(false);
     }
@@ -36,6 +37,36 @@ const OrderHistoryTab = ({ userInfo, onOrderCountChange }) => {
 
   const toggleTracker = (orderId) => {
     setExpandedTrackerId((prev) => (prev === orderId ? null : orderId));
+  };
+
+  // Cancellation handler with 10-minute window backend call
+  const handleCancelOrder = async (orderId) => {
+    if (!window.confirm('Are you sure you want to cancel this order?')) return;
+
+    try {
+      const res = await fetch(`http://localhost:5000/api/orders/${orderId}/cancel`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      });
+      const data = await res.json();
+
+      if (res.ok) {
+        alert('Order cancelled successfully.');
+        setOrders((prev) =>
+          prev.map((order) =>
+            order._id === orderId ? { ...order, isCancelled: true } : order
+          )
+        );
+      } else {
+        alert(data.message || 'Failed to cancel order.');
+      }
+    } catch (err) {
+      console.error('Cancel order error:', err);
+      alert('Error connecting to server.');
+    }
   };
 
   // Calculates active step index (0 to 4)
@@ -62,12 +93,19 @@ const OrderHistoryTab = ({ userInfo, onOrderCountChange }) => {
       {loadingOrders ? (
         <p>Loading your orders...</p>
       ) : orders.length === 0 ? (
-        <div className="empty-tab-box"><p>No orders placed yet.</p></div>
+        <div className="empty-tab-box">
+          <p>No orders placed yet.</p>
+        </div>
       ) : (
         <div className="order-history-list">
           {orders.map((order) => {
             const currentStep = getTrackingStepIndex(order);
             const isTrackingOpen = expandedTrackerId === order._id;
+
+            const orderDate = new Date(order.createdAt).getTime();
+            const diffMinutes = (currentTime - orderDate) / (1000 * 60);
+            const isExpired = diffMinutes >= 10;
+            const minutesLeft = Math.max(0, Math.ceil(10 - diffMinutes));
 
             return (
               <div key={order._id} className="order-history-card">
@@ -97,12 +135,19 @@ const OrderHistoryTab = ({ userInfo, onOrderCountChange }) => {
                         const isCurrent = idx === currentStep && !order.isCancelled;
 
                         return (
-                          <div key={idx} className={`tracking-step ${isCompleted ? 'active' : ''} ${isCurrent ? 'current' : ''}`}>
+                          <div
+                            key={idx}
+                            className={`tracking-step ${isCompleted ? 'active' : ''} ${
+                              isCurrent ? 'current' : ''
+                            }`}
+                          >
                             <div className="step-node">{isCompleted ? '✓' : idx + 1}</div>
                             <div className="step-info">
                               <span className="step-title">{step.title}</span>
                               <span className="step-subtext">
-                                {idx === 2 && order.awbCode ? `${order.courierPartner || 'Delhivery'}` : step.subtext}
+                                {idx === 2 && order.awbCode
+                                  ? `${order.courierPartner || 'Delhivery'}`
+                                  : step.subtext}
                               </span>
                             </div>
                             {idx < trackingSteps.length - 1 && <div className="step-connector" />}
@@ -120,17 +165,43 @@ const OrderHistoryTab = ({ userInfo, onOrderCountChange }) => {
                       <img src={item.image} alt={item.name} />
                       <div>
                         <p className="order-item-title">{item.name}</p>
-                        <p className="order-item-details">{item.qty} × ₹{item.price.toFixed(2)}</p>
+                        <p className="order-item-details">
+                          {item.qty} × ₹{item.price.toFixed(2)}
+                        </p>
                       </div>
                     </div>
                   ))}
                 </div>
 
+                {/* ORDER FOOTER WITH DYNAMIC CANCELLATION */}
                 <div className="order-footer-row">
-                  <span className="order-total">Total: ₹{order.totalPrice.toFixed(2)} ({order.paymentMethod})</span>
-                  {order.isDelivered && (
-                    <span className="status-delivered-text">✓ Delivered</span>
-                  )}
+                  <span className="order-total">
+                    Total: ₹{order.totalPrice.toFixed(2)} ({order.paymentMethod || 'COD'})
+                  </span>
+
+                  <div className="cancel-action-wrapper">
+                    {order.isCancelled ? (
+                      <span className="status-cancelled-badge">Order Cancelled</span>
+                    ) : order.isDelivered ? (
+                      <span className="status-delivered-badge">
+                        ✓ Delivered on {new Date(order.deliveredAt || Date.now()).toLocaleDateString()}
+                      </span>
+                    ) : order.isDispatched ? (
+                      <span className="status-in-transit-badge">📦 Package in Transit</span>
+                    ) : isExpired ? (
+                      <button type="button" className="cancel-order-btn-disabled" disabled>
+                        Cancellation window closed
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        className="cancel-order-btn-active"
+                        onClick={() => handleCancelOrder(order._id)}
+                      >
+                        Cancel Order ({minutesLeft}m left)
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
             );
